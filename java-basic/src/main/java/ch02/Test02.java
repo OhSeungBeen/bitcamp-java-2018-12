@@ -17,7 +17,7 @@ public class Test02 {
         // 30 억을 8바이트 리터럴로 출력하라.
         System.out.println(3000000000L);
         // 30 억을 4바이트 리터럴로 출력하라.
-        System.out.println(3000000000);  //컴파일에러
+       // System.out.println(3000000000);  //컴파일에러
       }
 }
   
