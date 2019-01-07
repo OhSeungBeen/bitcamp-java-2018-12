@@ -14,7 +14,7 @@ public class App3 {
       num =sc.nextInt();
       System.out.print("내용? ");
       str =sc.next();
-      
+      sc.close();
       System.out.println("번호: "+num);
       System.out.println("내용: "+str);
       System.out.printf("가입일: %1$tY-%1$tm-%1$td\n", date);
