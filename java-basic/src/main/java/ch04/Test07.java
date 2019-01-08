@@ -1,9 +1,12 @@
 // 부동 소수점의 비교 오류
 package ch04;
 
+import java.util.Scanner;
+
 public class Test07 {
 
   public static void main(String[] args) {
+    
     float f1 = 0.1f;
     float f2 = 0.1f;
     

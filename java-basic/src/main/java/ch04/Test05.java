@@ -13,8 +13,10 @@ public class Test05 {
     // 연산자 우선 순위에서 괄호는 모든 연산자 보다 우선으로 취급된다.
     
     int a = 2;
-    int r3 = a++ + a++ * a++;
+    int r3 = a++ + (a++ * a++);
     System.out.println(r3);
     System.out.println(a);
+    System.out.println(!true);
+    a++;
   }
 }
