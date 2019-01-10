@@ -1,39 +1,45 @@
 package bitcamp.lms;
-
-import java.util.Date;
+import java.sql.Date;
 import java.util.Scanner;
 
 public class App2 {
-    public static void main(String[] args) {
-      Date date = new Date();
-      int num;
-      String name;
-      String email;
-      int pw;
-      String picture;
-      String hp;
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    
+    Member[] mem  = new Member[100];
+    int indexCount = 0;
+    for(int i = 0; i < mem.length; i++) {
+      mem[i] = new Member();
       
-      Scanner sc = new Scanner(System.in);
-       System.out.print("번호? ");
-       num = sc.nextInt();
-       System.out.print("이름? ");
-       sc.nextLine();
-       name = sc.nextLine();
-       System.out.print("암호? ");
-       pw = sc.nextInt();
-       System.out.print("사진? ");
-       sc.nextLine();
-       picture = sc.nextLine();
-       System.out.print("전화? ");
-       hp = sc.nextLine();
+      System.out.print("번호? ");
+      mem[i].no = Integer.parseInt(sc.nextLine());  
+      System.out.print("이름? ");
+      mem[i].name = sc.nextLine(); 
+      System.out.print("이메일? ");
+      mem[i].email = sc.nextLine();
+      System.out.print("암호? ");
+      mem[i].password = sc.nextLine();
+      System.out.print("사진? ");
+      mem[i].photo = sc.nextLine();
+      System.out.print("전화? ");
+      mem[i].tel = sc.nextLine();
       
-       Date createdDate = new Date(System.currentTimeMillis());
-       System.out.println("번호: "+num);
-       System.out.println("이름: "+name);
-       System.out.println("암호: "+pw);
-       System.out.println("사진: "+picture);
-       System.out.println("전화: "+hp);
-       System.out.printf("가입일: %1$tY-%1$tm-%1$td", date);
-       System.out.print("\n"+createdDate);
+      indexCount ++;
+      
+      System.out.print("계속 입력 하시겠습니까?(Y/n)");
+      String key = sc.nextLine();
+      System.out.println();
+      if(!key.equalsIgnoreCase("y") && !key.equals(""))
+        break;
     }
+    
+    for(int i = 0; i < indexCount; i++) {
+      
+      System.out.printf("%3d, %-4s, %20s ~ %-15s, %s\n", 
+          mem[i].no, mem[i].name, mem[i].password, 
+          mem[i].photo, mem[i].tel);
+    }
+    
+    
+  }
 }

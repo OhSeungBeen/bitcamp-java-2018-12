@@ -1,23 +1,51 @@
 package bitcamp.lms;
-
-import java.util.Date;
+import java.sql.Date;
 import java.util.Scanner;
 
 public class App3 {
-    public static void main(String[] args) {
-      Date date = new Date();
-      Scanner sc = new Scanner(System.in);
-      int num;
-      String str;
+
+  public static void main(String[] args) {
+    Scanner keyboard = new Scanner(System.in);
+
+    final int LENGTH = 10;
+    
+    Board[] boards = new Board[LENGTH];
+    
+    int i = 0;
+    while (i < LENGTH) {
+      Board board = new Board();
       
       System.out.print("번호? ");
-      num =sc.nextInt();
+      board.no = Integer.parseInt(keyboard.nextLine());
+      
       System.out.print("내용? ");
-      str =sc.next();
-      sc.close();
-      System.out.println("번호: "+num);
-      System.out.println("내용: "+str);
-      System.out.printf("가입일: %1$tY-%1$tm-%1$td\n", date);
-      System.out.print("조회수: 0");
+      board.contents = keyboard.nextLine();
+      
+      board.createdDate = new Date(System.currentTimeMillis()); 
+      
+      board.viewCount = 0;
+      
+      boards[i] = board;
+      i++;
+      
+      System.out.print("\n계속 입력하시겠습니까?(Y/n) ");
+      String answer = keyboard.nextLine().toLowerCase();
+      
+      if (!answer.equals("y") && answer.length() > 0) {
+        break;
+      }
+
+      System.out.println();
     }
+    
+    keyboard.close();
+    
+    System.out.println();
+    
+  
+    for (int j = 0; j < i; j++) {
+      System.out.printf("%3d, %-20s, %s, %d\n", 
+          boards[j].no, boards[j].contents, boards[j].createdDate, boards[j].viewCount);
+    }
+  }
 }
