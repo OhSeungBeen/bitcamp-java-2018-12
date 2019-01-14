@@ -22,17 +22,29 @@ public class Calculator {
     /*
     if (a >= 0)
       return a;
-    else
-      return a  * -1;
+    else 
+      return a * -1;
     */
-    return (a >= 0) ? a : a * -1; 
+    return (a >= 0) ? a : a * -1;
   }
   
-  //클래스를 정의하면서 만든 기능을 간단하게 테스트할 때
-  // 다음과 같이 해당 클래스에 main() 메서드를 만들어
+  // 클래스를 정의하면서 만든 기능을 간단하게 확인하고 싶을 때, 
+  // 다음과 같이 해당 클래스에 main() 메서드를 만들어 
   // 테스트 해 볼 수 있다.
+  //
+  /*
   public static void main(String[] args) {
     System.out.println(abs(100));
     System.out.println(abs(-100));
   }
+  */
 }
+
+
+
+
+
+
+
+
+

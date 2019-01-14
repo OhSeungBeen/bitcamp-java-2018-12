@@ -11,6 +11,7 @@ public class App {
   
   public static void main(String[] args) {
     
+    LessonHandler l1 = new LessonHandler();
     LessonHandler.keyboard = keyboard;
     MemberHandler.keyboard = keyboard;
     BoardHandler.keyboard = keyboard;
@@ -20,9 +21,9 @@ public class App {
       String command = prompt();
       
       if (command.equals("/lesson/add")) {
-        LessonHandler.addLesson();
+        l1.addLesson();
       } else if (command.equals("/lesson/list")) {
-        LessonHandler.listLesson();
+        l1.listLesson();
       } else if (command.equals("/member/add")) {
         MemberHandler.addMember();
       } else if (command.equals("/member/list")) {

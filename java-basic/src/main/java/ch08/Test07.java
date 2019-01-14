@@ -7,15 +7,16 @@ public class Test07 {
   
   public static void main(String[] args) {
     Scanner keyboard = new Scanner(System.in);
-    System.out.println("계산식?(예: 12 * 2) ");
+    
+    System.out.print("계산식?(예: 12 * 2) ");
     int a = keyboard.nextInt();
     String op = keyboard.next();
     int b = keyboard.nextInt();
-    
+   
     keyboard.close();
     
     int result = 0;
-    switch(op) {
+    switch (op) {
       case "+": result = Calculator.plus(a, b); break;
       case "-": result = Calculator.minus(a, b); break;
       case "*": result = Calculator.multiple(a, b); break;
@@ -29,10 +30,26 @@ public class Test07 {
   }
   
   
-  
-  
-  
 }
+
+/*
+# 클래스 문법의 용도
+1) 새 데이터 타입을 정의할 때
+2) 관련 메서드를 분류할 때
+   => 클래스 문법은 유지보수하기 쉽도록 관련 기능들을 묶어 분류할 때 사용할 수 있다.
+ */
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

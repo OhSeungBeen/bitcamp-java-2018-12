@@ -7,10 +7,10 @@ public class LessonHandler {
   
   final static int LENGTH = 10;
   public static Scanner keyboard;
-  static Lesson[] lessons = new Lesson[LENGTH];
-  static int lessonIdx = 0;
+  Lesson[] lessons = new Lesson[LENGTH];
+  int lessonIdx = 0;
   
-  public static void addLesson() {
+  public void addLesson() {
     Lesson lesson = new Lesson();
 
     System.out.print("번호? ");
@@ -40,7 +40,7 @@ public class LessonHandler {
     System.out.println("저장하였습니다.");
   }
 
-  public static void listLesson() {
+  public void listLesson() {
     for (int j = 0; j < lessonIdx; j++) {
       System.out.printf("%3d, %-15s, %10s ~ %10s, %4d\n", 
           lessons[j].no, lessons[j].title, lessons[j].startDate, 
