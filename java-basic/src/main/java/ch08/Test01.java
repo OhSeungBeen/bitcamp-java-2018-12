@@ -25,6 +25,7 @@ class My1{
   // 이런 변수를 "인스턴스 필드"라고 부른다.
   String name;
   int age;
+  int age2;
   String userType;
 }
 
