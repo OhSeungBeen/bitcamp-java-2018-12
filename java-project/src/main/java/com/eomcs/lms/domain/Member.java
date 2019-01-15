@@ -1,4 +1,4 @@
-package com.eomcs.domain;
+package com.eomcs.lms.domain;
 
 import java.sql.Date;
 
