@@ -18,8 +18,8 @@ public class MemberHandler {
   public void listMember() {
     for (int j = 0; j < this.memberIdx; j++) {
       System.out.printf("%3d, %-4s, %-20s, %-15s, %s\n", 
-          this.members[j].no, this.members[j].name, this.members[j].email, 
-          this.members[j].tel, this.members[j].registeredDate);
+          this.members[j].getNo(), this.members[j].getName(), this.members[j].getEmail(), 
+          this.members[j].getTel(), this.members[j].getRegisteredDate());
     }
   }
 
@@ -27,24 +27,24 @@ public class MemberHandler {
     Member member = new Member();
     
     System.out.print("번호? ");
-    member.no = Integer.parseInt(this.keyboard.nextLine());
+    member.setNo(Integer.parseInt(this.keyboard.nextLine()));
     
     System.out.print("이름? ");
-    member.name = this.keyboard.nextLine();
+    member.setName(this.keyboard.nextLine());
     
     System.out.print("이메일? ");
-    member.email = this.keyboard.nextLine();
+    member.setEmail(this.keyboard.nextLine());
     
     System.out.print("암호? ");
-    member.password = this.keyboard.nextLine();
+    member.setPassword(this.keyboard.nextLine());
   
     System.out.print("사진? ");
-    member.photo = this.keyboard.nextLine();
+    member.setPhoto(this.keyboard.nextLine());
   
     System.out.print("전화? ");
-    member.tel = this.keyboard.nextLine();
+    member.setTel(this.keyboard.nextLine());
   
-    member.registeredDate = new Date(System.currentTimeMillis()); 
+    member.setRegisteredDate(new Date(System.currentTimeMillis())); 
     
     this.members[this.memberIdx] = member;
     this.memberIdx++;

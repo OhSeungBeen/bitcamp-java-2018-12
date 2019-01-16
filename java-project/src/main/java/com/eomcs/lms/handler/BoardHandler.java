@@ -19,8 +19,8 @@ public class BoardHandler {
   public void listBoard() {
     for (int j = 0; j < this.boardIdx; j++) {
       System.out.printf("%3d, %-20s, %s, %d\n", 
-          this.boards[j].no, this.boards[j].contents, 
-          this.boards[j].createdDate, this.boards[j].viewCount);
+          this.boards[j].getNo(), this.boards[j].getContents(), 
+          this.boards[j].getCreatedDate(), this.boards[j].getViewCount());
     }
   }
 
@@ -28,14 +28,14 @@ public class BoardHandler {
     Board board = new Board();
     
     System.out.print("번호? ");
-    board.no = Integer.parseInt(this.keyboard.nextLine());
+    board.setNo(Integer.parseInt(this.keyboard.nextLine()));
     
     System.out.print("내용? ");
-    board.contents = this.keyboard.nextLine();
+    board.setContents(this.keyboard.nextLine());
     
-    board.createdDate = new Date(System.currentTimeMillis()); 
+    board.setCreatedDate(new Date(System.currentTimeMillis())); 
     
-    board.viewCount = 0;
+    board.setViewCount(0);
     
     this.boards[this.boardIdx] = board;
     this.boardIdx++;
