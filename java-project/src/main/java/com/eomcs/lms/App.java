@@ -12,11 +12,8 @@ public class App {
   public static void main(String[] args) {
     
     LessonHandler lessonHandler = new LessonHandler(keyboard);
-    
     MemberHandler memberHandler = new MemberHandler(keyboard);
-    
     BoardHandler boardHandler1 = new BoardHandler(keyboard);
-    
     BoardHandler boardHandler2 = new BoardHandler(keyboard);
     
     while (true) {

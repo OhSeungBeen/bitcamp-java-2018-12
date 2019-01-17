@@ -8,11 +8,11 @@ public class BoardHandler {
   
   static final int LENGTH = 10;
   
-  public Scanner keyboard;
+  Scanner keyboard;
   Board[] boards = new Board[LENGTH];
   int boardIdx = 0;
 
-  public BoardHandler(Scanner keyboard){
+  public BoardHandler(Scanner keyboard) {
     this.keyboard = keyboard;
   }
   
@@ -28,10 +28,10 @@ public class BoardHandler {
     Board board = new Board();
     
     System.out.print("번호? ");
-    board.setNo(Integer.parseInt(this.keyboard.nextLine()));
+    board.setNo(Integer.parseInt(keyboard.nextLine()));
     
     System.out.print("내용? ");
-    board.setContents(this.keyboard.nextLine());
+    board.setContents(keyboard.nextLine());
     
     board.setCreatedDate(new Date(System.currentTimeMillis())); 
     

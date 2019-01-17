@@ -2,30 +2,39 @@ package com.eomcs.lms.handler;
 import com.eomcs.lms.domain.Lesson;
 
 public class LessonList {
-  private Lesson[] lesson;
-  int DEFAULT = 10;
+  static final int MIN_VALUE = 3;
+  Lesson[] list;
+  int size = 0;
   
   public LessonList() {
-    lesson = new Lesson[DEFAULT];
+    list = new Lesson[MIN_VALUE];
   }
-  
-  public LessonList(int init ) {
-    lesson = new Lesson[init];
+
+  public LessonList(int initValue) {
+    if (initValue <= 10)
+      list = new Lesson[10];
+    else
+      list = new Lesson[initValue];
   }
-  
+
   public Lesson[] toArray() {
-    return this.lesson;
-  }
-  
-  public void Add(Lesson lesson) {
-    
-    for(int i = 0; i < this.lesson.length; i++ ) {
-      if(this.lesson[i] == null) {
-        this.lesson[i] = lesson;
-        break;
-      }
+    Lesson[] lessons = new Lesson[size];
+    for(int i = 0; i < size; i++) {
+      lessons[i] = list[i];
     }
-    
+    list = lessons;
+    return list;
   }
   
+  public void add(Lesson lesson) {
+    System.out.println(list.length);
+    if(size >= this.list.length) {
+      Lesson[] lessons = new Lesson[list.length + (list.length >> 1)];
+      for(int i =0; i < list.length; i++) {
+        lessons[i] = list[i];
+      }
+      list = lessons;
+    }
+    this.list[size++] = lesson;
+  }
 }
