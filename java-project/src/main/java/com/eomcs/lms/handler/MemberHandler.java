@@ -2,6 +2,7 @@ package com.eomcs.lms.handler;
 import java.sql.Date;
 import java.util.Scanner;
 import com.eomcs.lms.domain.Member;
+import com.eomcs.util.ArrayList;
 
 public class MemberHandler {
   
@@ -10,12 +11,11 @@ public class MemberHandler {
   
   public MemberHandler(Scanner keyboard) {
     this.keyboard = keyboard;
-    this.list = new ArrayList<>();
+    this.list = new ArrayList<>(20);
   }
   
   public void listMember() {
-    Member[] members = list.toArray(new Member[0]);
-    
+    Member[] members = list.toArray(new Member[] {});
     for (Member member : members) {
       System.out.printf("%3d, %-4s, %-20s, %-15s, %s\n", 
           member.getNo(), member.getName(), 
@@ -52,12 +52,3 @@ public class MemberHandler {
   }
 
 }
-
-
-
-
-
-
-
-
-
