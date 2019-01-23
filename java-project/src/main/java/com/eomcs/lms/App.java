@@ -37,15 +37,6 @@ public class App {
       } else if (command.equals("/board/list")) {
         boardHandler1.listBoard();
         
-      } else if (command.equals("/board/detail")) {
-        boardHandler1.detailBoard();
-        
-      } else if (command.equals("/board/delete")) {
-        boardHandler1.deleteBoard();
-        
-      } else if (command.equals("/board/update")) {
-        boardHandler1.updateBoard();
-        
       } else if (command.equals("/board2/add")) {
         boardHandler2.addBoard();
         
