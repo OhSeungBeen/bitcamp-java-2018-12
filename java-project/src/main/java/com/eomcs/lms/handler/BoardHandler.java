@@ -2,32 +2,25 @@ package com.eomcs.lms.handler;
 import java.sql.Date;
 import java.util.Scanner;
 import com.eomcs.lms.domain.Board;
+import com.eomcs.util.LinkedList;
 
 public class BoardHandler {
   
   Scanner keyboard;
-  ArrayList list;
+  LinkedList<Board> list;
   
   public BoardHandler(Scanner keyboard) {
     this.keyboard = keyboard;
-    this.list = new ArrayList(20);
+    this.list = new LinkedList<>();
   }
   
   public void listBoard() {
-    Object[] objs = list.toArray();
-    
-    for (int i = 0; i < objs.length; i++) {
-      Board board = (Board)objs[i];
+    Board[] boards = list.toArray(new Board[0]);
+    for (Board board : boards) {
       System.out.printf("%3d, %-20s, %s, %d\n", 
           board.getNo(), board.getContents(), 
           board.getCreatedDate(), board.getViewCount());
     }
-//    for (Object obj : objs) {
-//      Board board = (Board) obj;
-//      System.out.printf("%3d, %-20s, %s, %d\n", 
-//          board.getNo(), board.getContents( obj), 
-//          board.getCreatedDate(), board.getViewCount());
-//    }
   }
 
   public void addBoard() {
@@ -48,4 +41,73 @@ public class BoardHandler {
     System.out.println("저장하였습니다.");
   }
 
+  public void detailBoard() {
+    System.out.print("번호? ");
+    int no = Integer.parseInt(keyboard.nextLine());
+
+    int index = indexOfBoard(no);
+    if (index == -1) {
+      System.out.println("해당 게시글을 찾을 수 없습니다.");
+      return;
+    }
+
+    Board board = list.get(index);
+
+    System.out.printf("내용: %s\n", board.getContents());
+    System.out.printf("작성일: %s\n", board.getCreatedDate());
+  }
+  
+  public void updateBoard() {
+    System.out.print("번호? ");
+    int no = Integer.parseInt(keyboard.nextLine());
+
+    int index = indexOfBoard(no);
+    if (index == -1) {
+      System.out.println("해당 게시글을 찾을 수 없습니다.");
+      return;
+    }
+    
+    Board board = list.get(index);
+    
+    try {
+      // 기존 값 복제
+      Board temp = board.clone();
+      
+      System.out.printf("내용? ");
+      String input = keyboard.nextLine();
+      if (input.length() > 0) 
+        temp.setContents(input);
+      
+      list.set(index, temp);
+      
+      System.out.println("게시글을 변경했습니다.");
+      
+    } catch (Exception e) {
+      System.out.println("변경 중 오류 발생!");
+    }
+  }
+  
+  public void deleteBoard() {
+    System.out.print("번호? ");
+    int no = Integer.parseInt(keyboard.nextLine());
+
+    int index = indexOfBoard(no);
+    if (index == -1) {
+      System.out.println("해당 게시글을 찾을 수 없습니다.");
+      return;
+    }
+    
+    list.remove(index);
+    
+    System.out.println("게시글을 삭제했습니다.");
+  }
+  
+  private int indexOfBoard(int no) {
+    for (int i = 0; i < list.getSize(); i++) {
+      Board b = list.get(i);
+      if (b.getNo() == no)
+        return i;
+    }
+    return -1;
+  }
 }

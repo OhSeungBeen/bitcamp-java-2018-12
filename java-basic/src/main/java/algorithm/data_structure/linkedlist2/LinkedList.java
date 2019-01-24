@@ -1,5 +1,5 @@
-package algorithm.data_structure.linkedlist;
-
+// static nested class 문법 적용 - node 클래스를 스태틱 중첩 클래스로 선언한다.
+package algorithm.data_structure.linkedlist2;
 
 public class LinkedList {
   protected Node head;
@@ -158,6 +158,25 @@ public class LinkedList {
     size --;
     return old;
   }
+  // LinkedList 에서만 쓰이는 Node 클래스를 중첩 클래스로 만든다.
+  // => Node 클래스는 LinkedList의 특정 인스턴스를 사용하지 않는다.
+  // => 그래서 static 중첩 클래스로 정의하는 것이다.
+  // => 외부에 공개할 일이 없기 때문에 private으로 접근을 제한한다.
   
-  
+  private static class Node {
+    //LinkedList 내부에서만 사용하기 때문에 Node의 멤버를 public으로 공개할 필요는 없다.
+    // 그냥 default로 두어라!
+    Object value;
+    Node pre;
+    Node next;
+    
+    Node() {
+      
+    }
+    
+    Node(Object value) {
+      this.value = value;
+    }
+    
+  }
 }

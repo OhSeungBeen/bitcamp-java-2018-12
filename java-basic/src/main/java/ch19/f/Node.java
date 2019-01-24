@@ -1,21 +1,27 @@
-package algorithm.data_structure.stack;
+package ch19.f;
 
+// LinkedList 에서 다룰 데이터를 담는 그릇이다.
+//
 public class Node {
   public Object value;
-  public Node pre;
+  public Node prev;
   public Node next;
   
   public Node() {
-    
   }
   
   public Node(Object value) {
     this.value = value;
   }
   
-  public Node(Object value, Node pre, Node next) {
+  public Node(Object value, Node prev, Node next) {
     this(value);
-    this.pre = pre;
+    this.prev = prev;
     this.next = next;
   }
 }
+
+
+
+
+
