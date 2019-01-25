@@ -37,7 +37,7 @@ public class LinkedList<E> {
     size++;
   }
   
-  public int getSize() {
+  public int Size() {
     return size;
   }
   
