@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 import com.eomcs.lms.domain.Member;
 
-public class MemberDeleteCommand implements Command{
+public class MemberDeleteCommand implements Command {
   
   Scanner keyboard;
   List<Member> list;
@@ -13,6 +13,7 @@ public class MemberDeleteCommand implements Command{
     this.list = list;
   }
   
+  @Override
   public void execute() {
     System.out.print("번호? ");
     int no = Integer.parseInt(keyboard.nextLine());

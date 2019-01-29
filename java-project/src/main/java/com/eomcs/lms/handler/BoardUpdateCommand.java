@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 import com.eomcs.lms.domain.Board;
 
-public class BoardUpdateCommand implements Command{
+public class BoardUpdateCommand implements Command {
   
   Scanner keyboard;
   List<Board> list;
@@ -13,6 +13,7 @@ public class BoardUpdateCommand implements Command{
     this.list = list;
   }
   
+  @Override
   public void execute() {
     System.out.print("번호? ");
     int no = Integer.parseInt(keyboard.nextLine());

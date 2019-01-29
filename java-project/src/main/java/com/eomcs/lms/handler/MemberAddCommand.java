@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 import com.eomcs.lms.domain.Member;
 
-public class MemberAddCommand implements Command{
+public class MemberAddCommand implements Command {
   
   Scanner keyboard;
   List<Member> list;
@@ -14,6 +14,7 @@ public class MemberAddCommand implements Command{
     this.list = list;
   }
   
+  @Override
   public void execute() {
     Member member = new Member();
     
@@ -41,5 +42,4 @@ public class MemberAddCommand implements Command{
     
     System.out.println("저장하였습니다.");
   }
-
 }

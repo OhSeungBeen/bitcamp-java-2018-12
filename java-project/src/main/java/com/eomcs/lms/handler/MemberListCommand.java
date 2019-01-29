@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 import com.eomcs.lms.domain.Member;
 
-public class MemberListCommand implements Command{
+public class MemberListCommand implements Command {
   
   Scanner keyboard;
   List<Member> list;
@@ -13,6 +13,7 @@ public class MemberListCommand implements Command{
     this.list = list;
   }
   
+  @Override
   public void execute() {
     Member[] members = list.toArray(new Member[] {});
     for (Member member : members) {
@@ -21,5 +22,4 @@ public class MemberListCommand implements Command{
           member.getEmail(), member.getTel(), member.getRegisteredDate());
     }
   }
-
 }

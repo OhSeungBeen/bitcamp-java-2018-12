@@ -1,4 +1,4 @@
-package com.eomcs.lms.handler;
+package ch21.c;
 
 public interface Command {
   void execute();
