@@ -40,9 +40,10 @@ public class App {
   static ArrayList<Lesson> lessonList = new ArrayList<>();
 
   public static void main(String[] args) {
-    
+
+    // 데이터 로딩
     loadLessonData();
-    
+
     LinkedList<Member> memberList = new LinkedList<>();
     ArrayList<Board> boardList = new ArrayList<>();
 
@@ -74,18 +75,17 @@ public class App {
       // 사용자가 입력한 명령을 큐에 보관한다.
       commandHistory2.offer(command);
 
-      // 사용자가 입력한 명령으로 Command 객체를 찾는다.
       Command commandHandler = commandMap.get(command);
 
       if (commandHandler != null) {
         try {
           commandHandler.execute();
         } catch (Exception e) {
-          System.out.println("명령어 실행 중 오류 발생 : " + e.toString());
+          System.out.printf("작업 중 오류 발생 : %s\n",e.getMessage());
         }
+
       } else if (command.equals("quit")) {
-        saveLessonData();
-        System.out.println("안녕!");
+        quit();
         break;
 
       } else if (command.equals("history")) {
@@ -127,44 +127,47 @@ public class App {
     return keyboard.nextLine().toLowerCase();
   }
 
-  private static void saveLessonData() {
-    try(FileWriter i1 = new FileWriter("lesson2.csv")) {
-      for(int i = 0; i < lessonList.size(); i++) {
-        i1.write(lessonList.get(i).getNo() + ",");
-        i1.write(lessonList.get(i).getTitle() + ",");
-        i1.write(lessonList.get(i).getContents() + ",");
-        i1.write(String.valueOf(lessonList.get(i).getStartDate()) + ",");
-        i1.write(String.valueOf(lessonList.get(i).getEndDate()) + ",");
-        i1.write(lessonList.get(i).getTotalHours() + ",");
-        i1.write(lessonList.get(i).getDayHours() + "\n");
-        
-      }
-
-    } catch (IOException e) {
-
-    }
+  private static void quit() {
+    saveLessonData();
+    System.out.println("안녕!");
   }
 
   private static void loadLessonData() {
-
-    try(FileReader r1 = new FileReader("lesson2.csv"); 
-        Scanner r2 = new Scanner(r1);) {
-
+    try (FileReader in = new FileReader("lesson.csv");
+        Scanner in2 = new Scanner(in)) {
+      
       while(true) {
-      
-      lessonList.add(Lesson.valueOf(r2.nextLine()));
-      
+        String line = in2.nextLine();
+        lessonList.add(Lesson.vlaueOf(line));
       }
+
+
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
 
     } catch (IOException e) {
-
-    }catch (NoSuchElementException e) {
+      e.printStackTrace();
+    } catch (NoSuchElementException e) {
       System.out.println("수업 데이터 로딩 완료!");
+    }
+  }
+
+  private static void saveLessonData() {
+    try(FileWriter out = new FileWriter("lesson.csv")){
+      for (Lesson lesson : lessonList) {
+        out.write(String.format("%s,%s,%s,%s,%s,%d,%d\n",
+            lesson.getNo(),
+            lesson.getTitle(),
+            lesson.getContents(),
+            lesson.getStartDate(),
+            lesson.getEndDate(),
+            lesson.getTotalHours(),
+            lesson.getDayHours()));
+      }
+    } catch (IOException e) {
+
     }
 
   }
-
-
 
 }

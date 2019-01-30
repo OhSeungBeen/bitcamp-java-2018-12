@@ -9,12 +9,12 @@ public class Lesson implements Cloneable {
   private Date endDate;
   private int totalHours;
   private int dayHours;
-
+  
   @Override
   public Lesson clone() throws CloneNotSupportedException {
     return (Lesson) super.clone();
   }
-
+  
   public int getNo() {
     return no;
   }
@@ -57,20 +57,22 @@ public class Lesson implements Cloneable {
   public void setDayHours(int dayHours) {
     this.dayHours = dayHours;
   }
-
-  public static Lesson valueOf(String csv) {
-    String[] str2 = csv.split(",");
-
+  
+  
+  public static Lesson vlaueOf(String csv) {
+    
+    String[] values = csv.split(",");
+    
     Lesson lesson = new Lesson();
-    lesson.setNo(Integer.parseInt(str2[0]));
-    lesson.setTitle(str2[1]);
-    lesson.setContents(str2[2]);
-    lesson.setStartDate(Date.valueOf(str2[3]));
-    lesson.setEndDate(Date.valueOf(str2[4]));
-    lesson.setTotalHours(Integer.parseInt(str2[5]));
-    lesson.setDayHours(Integer.parseInt(str2[6]));
+    lesson.setNo(Integer.parseInt(values[0]));
+    lesson.setTitle(values[1]);
+    lesson.setContents(values[2]);
+    lesson.setStartDate(Date.valueOf(values[3]));
+    lesson.setEndDate(Date.valueOf(values[4]));
+    lesson.setTotalHours(Integer.parseInt(values[5]));
+    lesson.setDayHours(Integer.parseInt(values[6]));
+    
     return lesson;
   }
-
-
+  
 }
