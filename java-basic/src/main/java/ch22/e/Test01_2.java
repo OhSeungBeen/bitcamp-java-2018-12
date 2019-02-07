@@ -14,11 +14,6 @@ public class Test01_2 {
     try (FileInputStream out = new FileInputStream("Score.data");
         BufferedInputStream out2 = new BufferedInputStream(out);
         DataInputStream out3 = new DataInputStream(out2)){
-      Score s4 = new Score("유관순", 80, 80, 80);
-//      String name1 = out3.readUTF();
-//      int kor1 = out3.readInt();
-//      int eng1 = out3.readInt();
-//      int math1 = out3.readInt();
       
       Score s1 = new Score(out3.readUTF(),out3.readInt(),out3.readInt(),out3.readInt());
       Score s2 = new Score(out3.readUTF(),out3.readInt(),out3.readInt(),out3.readInt());

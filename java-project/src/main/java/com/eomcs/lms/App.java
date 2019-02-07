@@ -1,20 +1,18 @@
 package com.eomcs.lms;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
+import com.eomcs.lms.context.ApplicatonListener;
 import com.eomcs.lms.domain.Board;
 import com.eomcs.lms.domain.Lesson;
 import com.eomcs.lms.domain.Member;
+import com.eomcs.lms.domain.Listener.BoardDataLoaderListener;
+import com.eomcs.lms.domain.Listener.LessonDataLoaderListener;
+import com.eomcs.lms.domain.Listener.MemberDataLoaderListener;
 import com.eomcs.lms.handler.BoardAddCommand;
 import com.eomcs.lms.handler.BoardDeleteCommand;
 import com.eomcs.lms.handler.BoardDetailCommand;
@@ -33,19 +31,45 @@ import com.eomcs.lms.handler.MemberListCommand;
 import com.eomcs.lms.handler.MemberUpdateCommand;
 
 public class App {
+  static ArrayList<ApplicatonListener> observers = new ArrayList<>();
+  
+  static HashMap<String,Object> context = new HashMap<>();
+  
+  static {
+    context.put("keyboard", new Scanner(System.in));
+    context.put("lessonList", new ArrayList<Lesson>());
+    context.put("boardList", new ArrayList<Board>());
+    context.put("memberList", new LinkedList<Member>());
+    context.put("commandHistroy", new Stack<String>());
+    context.put("commandHistory2", new LinkedList<String>());
+  }
+  
+  static LinkedList<Member> memberList = new LinkedList<>();
+  static ArrayList<Board> boardList = new ArrayList<>();
 
-  static Scanner keyboard = new Scanner(System.in);
-  static Stack<String> commandHistory = new Stack<>();
-  static Queue<String> commandHistory2 = new LinkedList<>();
-  static ArrayList<Lesson> lessonList = new ArrayList<>();
-
+  static void addApplicationListener(ApplicatonListener listener) {
+    observers.add(listener);
+  }
+  
+  @SuppressWarnings("unchecked")
   public static void main(String[] args) {
     
-    loadLessonData();
+    addApplicationListener(new LessonDataLoaderListener());
+    addApplicationListener(new MemberDataLoaderListener());
+    addApplicationListener(new BoardDataLoaderListener());
     
-    LinkedList<Member> memberList = new LinkedList<>();
-    ArrayList<Board> boardList = new ArrayList<>();
+    for(ApplicatonListener observer : observers) {
+      try {
+        observer.startApplication(context);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
 
+    Scanner keyboard = (Scanner) context.get("keyboard");
+    
+    ArrayList<Lesson> lessonList = (ArrayList<Lesson>) context.get("lessonList");
+    
     Map<String,Command> commandMap = new HashMap<>();
     commandMap.put("/lesson/add", new LessonAddCommand(keyboard, lessonList));
     commandMap.put("/lesson/list", new LessonListCommand(keyboard, lessonList));
@@ -53,12 +77,15 @@ public class App {
     commandMap.put("/lesson/update", new LessonUpdateCommand(keyboard, lessonList));
     commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard, lessonList));
 
+    
+    LinkedList<Member> memberList = (LinkedList<Member>)context.get("memberList");
     commandMap.put("/member/add", new MemberAddCommand(keyboard, memberList));
     commandMap.put("/member/list", new MemberListCommand(keyboard, memberList));
     commandMap.put("/member/detail", new MemberDetailCommand(keyboard, memberList));
     commandMap.put("/member/update", new MemberUpdateCommand(keyboard, memberList));
     commandMap.put("/member/delete", new MemberDeleteCommand(keyboard, memberList));
 
+    ArrayList<Board> boardList = (ArrayList<Board>)context.get("boardList");
     commandMap.put("/board/add", new BoardAddCommand(keyboard, boardList));
     commandMap.put("/board/list", new BoardListCommand(keyboard, boardList));
     commandMap.put("/board/detail", new BoardDetailCommand(keyboard, boardList));
@@ -67,10 +94,12 @@ public class App {
 
     while (true) {
       String command = prompt();
-
+      Stack<String> commandHistory = 
+          (Stack<String>)context.get("commandHistroy");
       // 사용자가 입력한 명령을 스택에 보관한다.
       commandHistory.push(command);
-
+      LinkedList<String> commandHistory2 = 
+          (LinkedList<String>) context.get("commandHistory2");
       // 사용자가 입력한 명령을 큐에 보관한다.
       commandHistory2.offer(command);
 
@@ -84,7 +113,6 @@ public class App {
           System.out.println("명령어 실행 중 오류 발생 : " + e.toString());
         }
       } else if (command.equals("quit")) {
-        saveLessonData();
         System.out.println("안녕!");
         break;
 
@@ -102,10 +130,21 @@ public class App {
     }
 
     keyboard.close();
+    
+    for(ApplicatonListener observer : observers) {
+      try {
+        observer.endApplication(context);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
+
 
   @SuppressWarnings("unchecked")
   private static void printCommandHistory() {
+    Stack<String> commandHistory = 
+        (Stack<String>)context.get("commandHistroy");
     Stack<String> temp = (Stack<String>) commandHistory.clone();
 
     while (temp.size() > 0) {
@@ -115,6 +154,8 @@ public class App {
 
   @SuppressWarnings("unchecked")
   private static void printCommandHistory2() {
+    LinkedList<String> commandHistory2 = 
+        (LinkedList<String>) context.get("commandHistory2");
     Queue<String> temp = (Queue<String>) ((LinkedList<String>) commandHistory2).clone();
 
     while (temp.size() > 0) {
@@ -123,48 +164,10 @@ public class App {
   }
 
   private static String prompt() {
+    Scanner keyboard = (Scanner) context.get("keyboard");
     System.out.print("명령> ");
     return keyboard.nextLine().toLowerCase();
   }
 
-  private static void saveLessonData() {
-    try(FileWriter i1 = new FileWriter("lesson2.csv")) {
-      for(int i = 0; i < lessonList.size(); i++) {
-        i1.write(lessonList.get(i).getNo() + ",");
-        i1.write(lessonList.get(i).getTitle() + ",");
-        i1.write(lessonList.get(i).getContents() + ",");
-        i1.write(String.valueOf(lessonList.get(i).getStartDate()) + ",");
-        i1.write(String.valueOf(lessonList.get(i).getEndDate()) + ",");
-        i1.write(lessonList.get(i).getTotalHours() + ",");
-        i1.write(lessonList.get(i).getDayHours() + "\n");
-        
-      }
-
-    } catch (IOException e) {
-
-    }
-  }
-
-  private static void loadLessonData() {
-
-    try(FileReader r1 = new FileReader("lesson2.csv"); 
-        Scanner r2 = new Scanner(r1);) {
-
-      while(true) {
-      
-      lessonList.add(Lesson.valueOf(r2.nextLine()));
-      
-      }
-    } catch (FileNotFoundException e) {
-
-    } catch (IOException e) {
-
-    }catch (NoSuchElementException e) {
-      System.out.println("수업 데이터 로딩 완료!");
-    }
-
-  }
-
-
-
+  
 }
