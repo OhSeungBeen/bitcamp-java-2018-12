@@ -1,31 +1,32 @@
-package com.eomcs.lms.agent;
+package com.eomcs.lms.proxy;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
-import com.eomcs.lms.domain.Lesson;
+import com.eomcs.lms.Dao.MemberDao;
+import com.eomcs.lms.domain.Member;
 
-public class LessonAgent {
+public class MemberDaoProxy implements MemberDao{
+
   String serverAddr;
   int port;
-  String rootpath;
-  
-  public LessonAgent(String serverAddr, int port, String rootpath) {
+  String filepath;
+
+  public MemberDaoProxy(String serverAddr, int port, String filepath) {
     this.serverAddr = serverAddr;
     this.port = port;
-    this.rootpath = rootpath;
+    this.filepath = filepath;
   }
-  
 
   @SuppressWarnings("unchecked")
-  public List<Lesson> list( ) throws Exception {
-
-    try (Socket socket = new Socket(serverAddr, port);
+  public List<Member> findAll() {
+    try (Socket socket = new Socket(this.serverAddr, this.port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF(rootpath + "/list"); 
+
+      out.writeUTF("/member/list"); 
       out.flush();
       if (!in.readUTF().equals("OK"))
         throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
@@ -35,36 +36,38 @@ public class LessonAgent {
       if (!status.equals("OK")) 
         throw new Exception("서버의 데이터 목록 가져오기 실패!");
 
-      return (List<Lesson>) in.readObject();
+      return (List<Member>) in.readObject();
+    } catch(Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
-  public void add(Lesson lesson) throws Exception {
-    try (Socket socket = new Socket(serverAddr, port);
+  public void insert(Member member) {
+    try (Socket socket = new Socket(this.serverAddr, this.port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-      out.writeUTF(rootpath + "/add"); 
+      out.writeUTF("/member/add"); 
       out.flush();
       if (!in.readUTF().equals("OK"))
         throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
 
-      out.writeObject(lesson);
+      out.writeObject(member);
       out.flush();
 
       String status = in.readUTF();
 
       if (!status.equals("OK"))
         throw new Exception("서버의 데이터 저장 실패!");
+    } catch(Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
-  public Lesson get(int no) throws Exception {
-
+  public Member findByNo(int no) {
     try (Socket socket = new Socket(this.serverAddr, this.port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-
-      out.writeUTF(rootpath + "/get");
+      out.writeUTF("/member/detail");
       out.flush();
       if (!in.readUTF().equals("OK"))
         throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
@@ -77,34 +80,38 @@ public class LessonAgent {
       if (!status.equals("OK")) 
         throw new Exception("서버의 데이터 가져오기 실패!");
 
-      return (Lesson) in.readObject();
-
+      return (Member) in.readObject();
+    } catch(Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
-  public void update(Lesson lesson) throws Exception {
-    try (Socket socket = new Socket(serverAddr, port);
+  public int update(Member member) {
+    try (Socket socket = new Socket(this.serverAddr, this.port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-      out.writeUTF(rootpath + "/update");
+      out.writeUTF("/member/update");
       out.flush();
       if (!in.readUTF().equals("OK"))
         throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
 
-      out.writeObject(lesson);
+      out.writeObject(member);
       out.flush();
 
       String status = in.readUTF();
       if (!status.equals("OK")) 
         throw new Exception("서버의 데이터 데이터 변경 실패!");
+      return 1;
+    } catch(Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
-  public void delete(int no) throws Exception {
-    try (Socket socket = new Socket(serverAddr, port);
+  public int delete(int no) {
+    try (Socket socket = new Socket(this.serverAddr, this.port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-      out.writeUTF(rootpath + "/delete");
+      out.writeUTF("/member/delete");
       out.flush();
       if (!in.readUTF().equals("OK"))
         throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
@@ -116,9 +123,14 @@ public class LessonAgent {
 
       if (!status.equals("OK")) 
         throw new Exception("서버의 데이터 삭제 실패!");
+      return 1;
+    } catch(Exception e) {
+      throw new RuntimeException(e);
     }
   }
-
+  
+  
+  
 }
 
 

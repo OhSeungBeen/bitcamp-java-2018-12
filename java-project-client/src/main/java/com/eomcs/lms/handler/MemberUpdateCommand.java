@@ -1,18 +1,16 @@
 package com.eomcs.lms.handler;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Scanner;
-import com.eomcs.lms.agent.MemberAgent;
 import com.eomcs.lms.domain.Member;
+import com.eomcs.lms.proxy.MemberDaoProxy;
 
 public class MemberUpdateCommand implements Command {
   
   Scanner keyboard;
-  MemberAgent memberAgent;
+  MemberDaoProxy memberDao;
   
-  public MemberUpdateCommand(Scanner keyboard, MemberAgent memberAgent) {
+  public MemberUpdateCommand(Scanner keyboard, MemberDaoProxy memberAgent) {
     this.keyboard = keyboard;
-    this.memberAgent = memberAgent;
+    this.memberDao = memberAgent;
   }
   
   @Override
@@ -21,7 +19,7 @@ public class MemberUpdateCommand implements Command {
     int no = Integer.parseInt(keyboard.nextLine());
 
     try {
-      Member member = memberAgent.get(no);
+      Member member = memberDao.findByNo(no);
     
       Member temp = member.clone();
       
@@ -46,7 +44,7 @@ public class MemberUpdateCommand implements Command {
       if ((input = keyboard.nextLine()).length() > 0)
         temp.setTel(input);
       
-      memberAgent.update(member);
+      memberDao.update(temp);
       
       System.out.println("변경했습니다.");
       

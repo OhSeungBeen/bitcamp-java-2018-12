@@ -1,17 +1,15 @@
 package com.eomcs.lms.handler;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Scanner;
-import com.eomcs.lms.agent.LessonAgent;
+import com.eomcs.lms.proxy.LessonDaoProxy;
 
 public class LessonDeleteCommand implements Command {
 
   Scanner keyboard;
-  LessonAgent lessonAgent;
+  LessonDaoProxy lessonDao;
 
-  public LessonDeleteCommand(Scanner keyboard, LessonAgent lessonAgent) {
+  public LessonDeleteCommand(Scanner keyboard, LessonDaoProxy lessonAgent) {
     this.keyboard = keyboard;
-    this.lessonAgent = lessonAgent;
+    this.lessonDao = lessonAgent;
   }
 
   @Override
@@ -21,7 +19,7 @@ public class LessonDeleteCommand implements Command {
 
 
     try {
-      lessonAgent.delete(no);
+      lessonDao.delete(no);
       System.out.println("삭제했습니다.");
 
     } catch (Exception e) {

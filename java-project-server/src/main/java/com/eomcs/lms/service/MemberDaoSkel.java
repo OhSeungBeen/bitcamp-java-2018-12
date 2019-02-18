@@ -2,34 +2,33 @@ package com.eomcs.lms.service;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import com.eomcs.lms.dao.BoardDao;
-import com.eomcs.lms.domain.Board;
+import com.eomcs.lms.dao.MemberDao;
+import com.eomcs.lms.domain.Member;
 
-public class BoardService implements Service {
+public class MemberDaoSkel implements Service {
 
-  // BoardService가 작업을 수행할 때 사용할 객체(의존 객체; dependency)
-  BoardDao boardDao;
+  MemberDao memberDao;
   
-  public BoardService(BoardDao boardDao) {
-    this.boardDao = boardDao;
+  public MemberDaoSkel(MemberDao memberDao) {
+    this.memberDao = memberDao;
   }
   
   public void execute(String request, ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    
+
     switch (request) {
-      case "/board/add":
+      case "/member/add":
         add(in, out);
         break;
-      case "/board/list":
+      case "/member/list":
         list(in, out);
         break;
-      case "/board/detail":
+      case "/member/detail":
         detail(in, out);
         break;
-      case "/board/update":
+      case "/member/update":
         update(in, out);
         break;
-      case "/board/delete":
+      case "/member/delete":
         delete(in, out);
         break;  
       default:
@@ -41,7 +40,7 @@ public class BoardService implements Service {
   private void add(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     out.writeUTF("OK");
     out.flush();
-    boardDao.insert((Board)in.readObject());
+    memberDao.insert((Member)in.readObject());
     out.writeUTF("OK");
   }
 
@@ -49,7 +48,7 @@ public class BoardService implements Service {
     out.writeUTF("OK");
     out.flush();
     out.writeUTF("OK");
-    out.writeUnshared(boardDao.findAll());
+    out.writeUnshared(memberDao.findAll());
   }
 
   private void detail(ObjectInputStream in, ObjectOutputStream out) throws Exception {
@@ -57,7 +56,7 @@ public class BoardService implements Service {
     out.flush();
     int no = in.readInt();
 
-    Board obj = boardDao.findByNo(no);
+    Member obj = memberDao.findByNo(no);
     if (obj == null) { 
       out.writeUTF("FAIL");
       return;
@@ -70,9 +69,9 @@ public class BoardService implements Service {
   private void update(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     out.writeUTF("OK");
     out.flush();
-    Board board = (Board) in.readObject();
+    Member member = (Member) in.readObject();
 
-    if (boardDao.update(board) == 0) {
+    if (memberDao.update(member) == 0) {
       out.writeUTF("FAIL");
       return;
     }
@@ -85,7 +84,7 @@ public class BoardService implements Service {
     out.flush();
     int no = in.readInt();
 
-    if (boardDao.delete(no) == 0) {
+    if (memberDao.delete(no) == 0) {
       out.writeUTF("FAIL");    
       return;
     }

@@ -1,18 +1,16 @@
 package com.eomcs.lms.handler;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Scanner;
-import com.eomcs.lms.agent.MemberAgent;
 import com.eomcs.lms.domain.Member;
+import com.eomcs.lms.proxy.MemberDaoProxy;
 
 public class MemberDetailCommand implements Command {
   
   Scanner keyboard;
-  MemberAgent memberAgent;
+  MemberDaoProxy memberDao;
   
-  public MemberDetailCommand(Scanner keyboard, MemberAgent memberAgent) {
+  public MemberDetailCommand(Scanner keyboard, MemberDaoProxy memberAgent) {
     this.keyboard = keyboard;
-    this.memberAgent = memberAgent;
+    this.memberDao = memberAgent;
   }
   
   @Override
@@ -21,7 +19,7 @@ public class MemberDetailCommand implements Command {
     int no = Integer.parseInt(keyboard.nextLine());
 
     try {
-      Member member = memberAgent.get(no);
+      Member member = memberDao.findByNo(no);
       System.out.printf("이름: %s\n", member.getName());
       System.out.printf("이메일: %s\n", member.getEmail());
       System.out.printf("암호: %s\n", member.getPassword());

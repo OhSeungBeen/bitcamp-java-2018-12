@@ -1,18 +1,16 @@
 package com.eomcs.lms.handler;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Scanner;
-import com.eomcs.lms.agent.LessonAgent;
 import com.eomcs.lms.domain.Lesson;
+import com.eomcs.lms.proxy.LessonDaoProxy;
 
 public class LessonDetailCommand implements Command {
 
   Scanner keyboard;
-  LessonAgent lessonAgent;
+  LessonDaoProxy lessonDao;
   
-  public LessonDetailCommand(Scanner keyboard, LessonAgent lessonAgent) {
+  public LessonDetailCommand(Scanner keyboard, LessonDaoProxy lessonAgent) {
     this.keyboard = keyboard;
-    this.lessonAgent = lessonAgent;
+    this.lessonDao = lessonAgent;
   }
 
   @Override
@@ -21,7 +19,7 @@ public class LessonDetailCommand implements Command {
     int no = Integer.parseInt(keyboard.nextLine());
 
     try {
-      Lesson lesson = lessonAgent.get(no);
+      Lesson lesson = lessonDao.findByNo(no);
       System.out.printf("수업명: %s\n", lesson.getTitle());
       System.out.printf("설명: %s\n", lesson.getContents());
       System.out.printf("기간: %s ~ %s\n", lesson.getStartDate(), lesson.getEndDate());
