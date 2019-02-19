@@ -1,4 +1,4 @@
-// 14단계: DAO에 프록시 패턴 적용하기
+// 15단계: 여러 클라이언트 요청을 처리할 때의 문제점과 해결책(멀티 스레드 적용)
 package com.eomcs.lms;
 
 import java.io.ObjectInputStream;
@@ -7,54 +7,54 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Set;
-import com.eomcs.lms.dao.BoardDaoImple;
-import com.eomcs.lms.dao.LessonDaoImple;
-import com.eomcs.lms.dao.MemberDaoImple;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import com.eomcs.lms.dao.BoardDaoImpl;
+import com.eomcs.lms.dao.LessonDaoImpl;
+import com.eomcs.lms.dao.MemberDaoImpl;
 import com.eomcs.lms.service.BoardDaoSkel;
 import com.eomcs.lms.service.LessonDaoSkel;
 import com.eomcs.lms.service.MemberDaoSkel;
 import com.eomcs.lms.service.Service;
 
-// DAO 프록시 패턴 적용
-// => 클라이언트에서 서버쪽에 DAO를 마치 직접 사용하는 것처럼 만들기
-// => 작업
-// 1) DAO 클래스에서 인터페이스를 추출하여 정의한다.
-//     => 예) BoardDao 인터페이스 정의
-// 2) 기존 클래스를 인터페이스를 구현하도록 변경한다.
-//     => 예) BoardDaoImpl 클래스로 변경
-// 3) BoardDaoImpl 객체를 서버쪽에서 대행할 클래스를 만든다.
-//     => 예) BoardService의 이름을 BoardSkel로 변경한다.
-// 4) 클라이언트쪽 BoardDaoImpl 객체를 대행할 프록시 클래스를 만든다.
-//    => 예) BoardAgent 클래스를 BoardDaoProxy클래스로 변경한다.
-//        BoardDaoProxy 클래스는 BoardDaoImple 클래스와 마찬가지로 BoardDao 인터페이스를 구현한다.
-//          패키지명도 agent 대신 proxy로 변경한다.
+// 멀티 스레드 적용
+// => 클라이언트 요청을 별도의 스레드에서 처리한다.
+// => 작업 
+// 1) 클라이언트의 요청 작업을 처리하는 코드를 별도의 스레드 클래스로 분리한다.
+//    => 예) RequestProcessorThread 클래스 정의
+// 2) 클라이언트가 연결되었을 때 스레드에게 실행을 위임한다.
+// 
+//
 public class ServerApp {
 
-  static BoardDaoImple boardDao; 
-  static MemberDaoImple memberDao;
-  static LessonDaoImple lessonDao;
+  static BoardDaoImpl boardDao; 
+  static MemberDaoImpl memberDao;
+  static LessonDaoImpl lessonDao;
 
   static HashMap<String,Service> serviceMap;
   static Set<String> serviceKeySet;
 
+  //스레드 풀
+  static ExecutorService executorService = Executors.newCachedThreadPool();
+
   public static void main(String[] args) {
 
     try {
-      boardDao = new BoardDaoImple("board.bin");
+      boardDao = new BoardDaoImpl("board.bin");
       boardDao.loadData();
     } catch (Exception e) {
       System.out.println("게시물 데이터 로딩 중 오류 발생!");
     }
 
     try {
-      memberDao = new MemberDaoImple("member.bin");
+      memberDao = new MemberDaoImpl("member.bin");
       memberDao.loadData();
     } catch (Exception e) {
       System.out.println("회원 데이터 로딩 중 오류 발생!");
     }
 
     try {
-      lessonDao = new LessonDaoImple("lesson.bin");
+      lessonDao = new LessonDaoImpl("lesson.bin");
       lessonDao.loadData();
     } catch (Exception e) {
       System.out.println("수업 데이터 로딩 중 오류 발생!");
@@ -71,62 +71,79 @@ public class ServerApp {
       System.out.println("서버 시작!");
 
       while (true) {
-        new RequestProcessorThread(serverSocket.accept()).start();
+
+        // 독립적으로 실행 해야할 일을 스레드 풀에 맡긴다.
+        executorService.submit(new RequestHandler(serverSocket.accept()));
       }
 
-    }catch (Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
+  static class RequestHandler implements Runnable {
 
-  static class RequestProcessorThread extends Thread{
+    static int count;
+    String name;
 
     Socket socket;
-
-    public RequestProcessorThread(Socket socket) {
+    public RequestHandler(Socket socket) {
       this.socket = socket;
+      this.name = "핸들러 -"+ count++;
+
+      System.out.printf("[%s : %s] 핸들가 생성됨\n",
+          Thread.currentThread().getName(), this.getName());
     }
 
+    public String getName() {
+      return this.name;
+    }
+
+    @Override
     public void run() {
       try (Socket socket = this.socket;
           ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
           ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
-        System.out.println("클라이언트와 연결되었음.");
+        System.out.printf("[%s : %s] 클라이언트와 연결되었음.\n",Thread.currentThread().getName(),this.getName());
 
         String request = in.readUTF();
-        System.out.println(request);
-
+        System.out.printf("[%s : %s] %s\n",Thread.currentThread().getName(),this.getName(), request);
 
         Service service = getService(request);
 
-        if(service == null) {
+        if (service == null) {
           out.writeUTF("FAIL");
+
         } else {
           service.execute(request, in, out);
         }
         out.flush();
 
-        System.out.println("클라이언트와의 연결을 끊었음.");
-      }catch (Exception e) {
+      } catch (Exception e) {
         e.printStackTrace();
       }
+      try { Thread.currentThread().sleep(8000);} catch (InterruptedException e) {}
 
+
+      System.out.printf("[%s : %s] 클라이언트와의 연결을 끊었음.\n",Thread.currentThread().getName(), this.getName());
     }
-  }
 
-
-  static Service getService(String request) {
-
-    for (String key : serviceKeySet) {
-      if (request.startsWith(key)) {
-        return serviceMap.get(key);
+    static Service getService(String request) {
+      for (String key : serviceKeySet) {
+        if (request.startsWith(key)) {
+          return serviceMap.get(key);
+        }
       }
+      return null;
     }
-    return null;
   }
 }
+
+
+
+
+
 
 
 

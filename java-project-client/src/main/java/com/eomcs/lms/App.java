@@ -1,4 +1,4 @@
-// 13단계: stateful 방식을 stateless 방식으로 전환하기 
+// 15단계: 여러 클라이언트 요청을 처리할 때의 문제점과 해결책(멀티 스레드 적용)
 package com.eomcs.lms;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,7 +32,7 @@ public class App {
   Stack<String> commandHistory = new Stack<>();
   Queue<String> commandHistory2 = new LinkedList<>();
 
-  public void service() {  
+  public void service() {
 
     Map<String,Command> commandMap = new HashMap<>();
 
@@ -50,12 +50,12 @@ public class App {
     commandMap.put("/member/update", new MemberUpdateCommand(keyboard, memberDao));
     commandMap.put("/member/delete", new MemberDeleteCommand(keyboard, memberDao));
 
-    BoardDaoProxy boardDAo = new BoardDaoProxy("localhost", 8888, "/board");
-    commandMap.put("/board/add", new BoardAddCommand(keyboard, boardDAo));
-    commandMap.put("/board/list", new BoardListCommand(keyboard, boardDAo));
-    commandMap.put("/board/detail", new BoardDetailCommand(keyboard, boardDAo));
-    commandMap.put("/board/update", new BoardUpdateCommand(keyboard, boardDAo));
-    commandMap.put("/board/delete", new BoardDeleteCommand(keyboard, boardDAo));
+    BoardDaoProxy boardDao = new BoardDaoProxy("localhost", 8888, "/board");
+    commandMap.put("/board/add", new BoardAddCommand(keyboard, boardDao));
+    commandMap.put("/board/list", new BoardListCommand(keyboard, boardDao));
+    commandMap.put("/board/detail", new BoardDetailCommand(keyboard, boardDao));
+    commandMap.put("/board/update", new BoardUpdateCommand(keyboard, boardDao));
+    commandMap.put("/board/delete", new BoardDeleteCommand(keyboard, boardDao));
 
     while (true) {
       String command = prompt();
