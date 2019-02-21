@@ -1,141 +1,125 @@
 package com.eomcs.lms.dao;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import com.eomcs.lms.domain.Member;
 
-//서버쪽에 있는 MemberDaoImpl 객체를 대행할 클라이언트측 대행자 클래스 정의 
-//
 public class MemberDaoImple implements MemberDao {
 
-  String serverAddr;
-  int port;
-  String rootPath;
+  Connection con;
 
-  public MemberDaoImple(String serverAddr, int port, String rootPath) {
-    this.serverAddr = serverAddr;
-    this.port = port;
-    this.rootPath = rootPath;
+
+  public MemberDaoImple(Connection con) {
+    this.con = con;
   }
 
-  @SuppressWarnings("unchecked")
   public List<Member> findAll() {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/member/list"); 
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
+    try(PreparedStatement stmt = con.prepareStatement(
+        "select member_id, name, email, pwd, cdt, tel, photo from lms_member"+
+        " order by member_id desc")){
 
-      String status = in.readUTF();
-
-      if (!status.equals("OK")) 
-        throw new Exception("서버의 데이터 목록 가져오기 실패!");
-
-      return (List<Member>) in.readObject();
-    } catch (Exception e) {
+      ResultSet rs = stmt.executeQuery();
+      List<Member> list = new ArrayList<Member>();
+      while(rs.next()) {
+        Member member = new Member();
+        member.setNo(rs.getInt("member_id"));
+        member.setName(rs.getString("name"));
+        member.setEmail(rs.getString("email"));;
+        member.setPassword(rs.getString("pwd"));
+        member.setRegisteredDate(rs.getDate("cdt"));
+        member.setTel(rs.getString("tel"));
+        member.setPhoto(rs.getString("photo"));
+        list.add(member);
+      }
+      return list;
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
   public void insert(Member member) {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/member/add"); 
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
-
-      out.writeObject(member);
-      out.flush();
-
-      String status = in.readUTF();
-
-      if (!status.equals("OK"))
-        throw new Exception("서버의 데이터 저장 실패!");
-    } catch (Exception e) {
+    try(PreparedStatement stmt = con.prepareStatement(
+        "insert into lms_member(name, email, pwd,  tel, photo)"+
+        " values(?, ?, ?, ?, ?)")){
+      stmt.setString(1, member.getName());
+      stmt.setString(2, member.getEmail());
+      stmt.setString(3, member.getPassword());
+      stmt.setString(4, member.getTel());
+      stmt.setString(5, member.getPhoto());
+      stmt.execute();
+      System.out.println("저장 하였습니다.");
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
   public Member findByNo(int no) {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/member/detail");
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
+    try(PreparedStatement stmt = con.prepareStatement(
+        "select member_id, name, email, cdt, tel, photo from lms_member"+
+        " where member_id = ?")){
+      stmt.setInt(1, no);
 
-      out.writeInt(no);
-      out.flush();
+      ResultSet rs = stmt.executeQuery();
 
-      String status = in.readUTF();
+      if(rs.next()) {
+        Member member = new Member();
+        member.setNo(rs.getInt("member_id"));
+        member.setName(rs.getString("name"));
+        member.setEmail(rs.getString("email"));
+        member.setRegisteredDate(rs.getDate("cdt"));
+        member.setTel(rs.getString("tel"));
+        member.setPhoto(rs.getString("photo"));
 
-      if (!status.equals("OK")) 
-        throw new Exception("서버의 데이터 가져오기 실패!");
+        return member;
+      } else {
+        return null;
+      }
 
-      return (Member) in.readObject();
-    } catch (Exception e) {
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
   public int update(Member member) {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/member/update");
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
+    try(PreparedStatement stmt = con.prepareStatement(
+        "update lms_member set "
+            + "name = ?, email = ?, pwd = ?, cdt = ?, tel = ?, photo = ?"
+            + " where member_id = ?")){
 
-      out.writeObject(member);
-      out.flush();
+      stmt.setString(1, member.getName());
+      stmt.setString(2, member.getEmail());
+      stmt.setString(3, member.getPassword());
+      stmt.setDate(4, member.getRegisteredDate());
+      stmt.setString(5, member.getTel());
+      stmt.setString(6, member.getPhoto());
+      stmt.setInt(7, member.getNo());
 
-      String status = in.readUTF();
-      if (!status.equals("OK")) 
-        throw new Exception("서버의 데이터 데이터 변경 실패!");
-      
-      return 1;
-      
-    } catch (Exception e) {
+      return stmt.executeUpdate();
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
   public int delete(int no) {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/member/delete");
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
-
-      out.writeInt(no);
-      out.flush();
-
-      String status = in.readUTF();
-
-      if (!status.equals("OK")) 
-        throw new Exception("서버의 데이터 삭제 실패!");
-      
-      return 1;
-      
-    } catch (Exception e) {
+    try(PreparedStatement stmt = con.prepareStatement(
+        "delete from lms_member where member_id = ?")){
+      stmt.setInt(1, no);
+      return stmt.executeUpdate();
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
+
+
 }
 
 

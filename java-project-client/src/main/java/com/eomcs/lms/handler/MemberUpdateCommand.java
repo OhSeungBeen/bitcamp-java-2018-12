@@ -1,4 +1,5 @@
 package com.eomcs.lms.handler;
+import java.sql.Date;
 import java.util.Scanner;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.domain.Member;
@@ -15,36 +16,34 @@ public class MemberUpdateCommand implements Command {
   
   @Override
   public void execute() {
-    System.out.print("번호? ");
-    int no = Integer.parseInt(keyboard.nextLine());
 
     try {
-      Member member = memberDao.findByNo(no);
+      Member member = new Member();
     
-      Member temp = member.clone();
+      System.out.print("번호? ");
+      member.setNo(Integer.parseInt(keyboard.nextLine()));
       
-      System.out.printf("이름(%s)? ", member.getName());
-      String input = keyboard.nextLine();
-      if (input.length() > 0) 
-        temp.setName(input);
+      System.out.printf("이름? ");
+      member.setName(keyboard.nextLine());
       
-      System.out.printf("이메일(%s)? ", member.getEmail());
-      if ((input = keyboard.nextLine()).length() > 0)
-        temp.setEmail(input);
+      System.out.printf("이메일? ");
+      member.setEmail(keyboard.nextLine());
       
-      System.out.printf("암호(********)? ");
-      if ((input = keyboard.nextLine()).length() > 0)
-        temp.setPassword(input);
+      System.out.printf("암호? ");
+      member.setPassword(keyboard.nextLine());
       
-      System.out.printf("사진(%s)? ", member.getPhoto());
-      if ((input = keyboard.nextLine()).length() > 0)
-        temp.setPhoto(input);
+      System.out.printf("사진? ");
+      member.setPhoto(keyboard.nextLine());
       
-      System.out.printf("전화(%s)? ", member.getTel());
-      if ((input = keyboard.nextLine()).length() > 0)
-        temp.setTel(input);
+      System.out.printf("전화? ");
+      member.setTel(keyboard.nextLine());
       
-      memberDao.update(temp);
+      member.setRegisteredDate(new Date(System.currentTimeMillis()));
+      
+      if(memberDao.update(member) == 0) {
+        System.out.println("해당 번호가 존재하지 않습니다.");
+        return;
+      }
       System.out.println("변경했습니다.");
       
     } catch (Exception e) {

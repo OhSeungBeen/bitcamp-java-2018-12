@@ -1,143 +1,123 @@
 package com.eomcs.lms.dao;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import com.eomcs.lms.domain.Lesson;
 
-//서버쪽에 있는 LessonDaoImpl 객체를 대행할 클라이언트측 대행자 클래스 정의 
-//
 public class LessonDaoImple implements LessonDao {
+  Connection con;
 
-  String serverAddr;
-  int port;
-  String rootPath;
-
-  public LessonDaoImple(String serverAddr, int port, String rootPath) {
-    this.serverAddr = serverAddr;
-    this.port = port;
-    this.rootPath = rootPath;
+  public LessonDaoImple(Connection con) {
+    this.con = con;
   }
 
-  @SuppressWarnings("unchecked")
   public List<Lesson> findAll() {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/lesson/list"); 
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
+    try(PreparedStatement stmt = con.prepareStatement(
+        "select lesson_id, sdt, edt, tot_hr, day_hr, titl, conts from lms_lesson"+
+        " order by lesson_id desc")){
 
-      String status = in.readUTF();
-
-      if (!status.equals("OK")) 
-        throw new Exception("서버의 데이터 목록 가져오기 실패!");
-
-      return (List<Lesson>) in.readObject();
-      
-    } catch (Exception e) {
+      ResultSet rs = stmt.executeQuery();
+      List<Lesson> list = new ArrayList<Lesson>();
+      while(rs.next()) {
+        Lesson lesson = new Lesson();
+        lesson.setNo(rs.getInt("lesson_id"));
+        lesson.setStartDate(rs.getDate("sdt"));
+        lesson.setEndDate(rs.getDate("edt"));;
+        lesson.setTotalHours(rs.getInt("tot_hr"));
+        lesson.setDayHours(rs.getInt("day_hr"));
+        lesson.setTitle(rs.getString("titl"));
+        lesson.setContents(rs.getString("conts"));
+        list.add(lesson);
+      }
+      return list;
+    }catch (Exception e) {
       throw new RuntimeException(e);
-    }
+    } 
   }
 
   public void insert(Lesson lesson) {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/lesson/add"); 
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
-
-      out.writeObject(lesson);
-      out.flush();
-
-      String status = in.readUTF();
-
-      if (!status.equals("OK"))
-        throw new Exception("서버의 데이터 저장 실패!");
-    } catch (Exception e) {
+    try(PreparedStatement stmt = con.prepareStatement(
+        "insert into lms_lesson(sdt, edt, tot_hr, day_hr, titl, conts)"+
+        " values(?, ?, ?, ?, ?, ?)")){
+      stmt.setDate(1, lesson.getStartDate());
+      stmt.setDate(2, lesson.getEndDate());
+      stmt.setInt(3, lesson.getTotalHours());
+      stmt.setInt(4, lesson.getDayHours());
+      stmt.setString(5, lesson.getTitle());
+      stmt.setString(6, lesson.getContents());
+      stmt.execute();
+      System.out.println("저장 하였습니다.");
+    }catch (SQLException e) {
       throw new RuntimeException(e);
-    }
+    } 
   }
 
   public Lesson findByNo(int no) {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/lesson/detail");
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
+    try(PreparedStatement stmt = con.prepareStatement(
+        "select lesson_id, sdt, edt, tot_hr, day_hr, titl, conts from lms_lesson"+
+        " where lesson_id = ?")){
+      stmt.setInt(1, no);
 
-      out.writeInt(no);
-      out.flush();
+      ResultSet rs = stmt.executeQuery();
 
-      String status = in.readUTF();
+      if(rs.next()) {
+        Lesson lesson = new Lesson();
+        lesson.setStartDate(rs.getDate("sdt"));
+        lesson.setEndDate(rs.getDate("edt"));
+        lesson.setTotalHours(rs.getInt("tot_hr"));
+        lesson.setDayHours(rs.getInt("day_hr"));
+        lesson.setTitle(rs.getString("titl"));
+        lesson.setContents(rs.getString("conts"));
 
-      if (!status.equals("OK")) 
-        throw new Exception("서버의 데이터 가져오기 실패!");
+        return lesson;
+      } else {
+        return null;
+      }
 
-      return (Lesson) in.readObject();
-      
-    }  catch (Exception e) {
+    } catch (SQLException e) {
       throw new RuntimeException(e);
-    }
+    } 
   }
 
   public int update(Lesson lesson) {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/lesson/update");
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
+    try(PreparedStatement stmt = con.prepareStatement(
+        "update lms_lesson set sdt = ?, edt = ?, tot_hr = ?,"
+            +" day_hr = ?, titl = ?, conts = ? where lesson_id = ?")){
 
-      out.writeObject(lesson);
-      out.flush();
+      stmt.setDate(1, lesson.getStartDate());
+      stmt.setDate(2, lesson.getEndDate());
+      stmt.setInt(3, lesson.getTotalHours());
+      stmt.setInt(4, lesson.getDayHours());
+      stmt.setString(5, lesson.getTitle());
+      stmt.setString(6, lesson.getContents());
+      stmt.setInt(7, lesson.getNo());
 
-      String status = in.readUTF();
-      if (!status.equals("OK")) 
-        throw new Exception("서버의 데이터 데이터 변경 실패!");
-      
-      return 1;
-      
-    } catch (Exception e) {
+      return stmt.executeUpdate();
+    } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
   public int delete(int no) {
-    try (Socket socket = new Socket(this.serverAddr, this.port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-      out.writeUTF("/lesson/delete");
-      out.flush();
-      if (!in.readUTF().equals("OK"))
-        throw new Exception("서버에서 해당 명령어를 처리하지 못합니다.");
-
-      out.writeInt(no);
-      out.flush();
-
-      String status = in.readUTF();
-
-      if (!status.equals("OK")) 
-        throw new Exception("서버의 데이터 삭제 실패!");
+    try(PreparedStatement stmt = con.prepareStatement(
+        "delete from lms_lesson where lesson_id = ?")){
+      stmt.setInt(1, no);
+      return stmt.executeUpdate();
       
-      return 1;
-      
-    } catch (Exception e) {
+    }catch (SQLException e) {
       throw new RuntimeException(e);
-    }
+    } 
   }
+
 }
 
 
