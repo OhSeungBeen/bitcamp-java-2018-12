@@ -10,6 +10,16 @@ import com.eomcs.lms.domain.Member;
 //
 public class MemberDaoImple implements MemberDao {
 
+  String serverAddr;
+  int port;
+  String rootPath;
+
+  public MemberDaoImple(String serverAddr, int port, String rootPath) {
+    this.serverAddr = serverAddr;
+    this.port = port;
+    this.rootPath = rootPath;
+  }
+
   @SuppressWarnings("unchecked")
   public List<Member> findAll() {
     try (Socket socket = new Socket(this.serverAddr, this.port);

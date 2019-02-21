@@ -1,7 +1,3 @@
-// 16단계: DAO에 JDBC 적용하기
-// => 현재 프로젝트에 mariadb JDBC 드라이버를 추가한다.
-// => 수업(Lesson), 회원(Member), 게시물(Board) 정보를 저장할 테이블을 생성한다.
-// => BoardDaoImpl, MemberDaoImple, LessonDaoImpl 클래스에 JDBC를 적용한다.
 package com.eomcs.lms;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,14 +35,14 @@ public class App {
 
     Map<String,Command> commandMap = new HashMap<>();
 
-    LessonDaoImple lessonDao = new LessonDaoImple();
+    LessonDaoImple lessonDao = new LessonDaoImple("192.168.0.31", 8888, "/lesson");
     commandMap.put("/lesson/add", new LessonAddCommand(keyboard, lessonDao));
     commandMap.put("/lesson/list", new LessonListCommand(keyboard, lessonDao));
     commandMap.put("/lesson/detail", new LessonDetailCommand(keyboard, lessonDao));
     commandMap.put("/lesson/update", new LessonUpdateCommand(keyboard, lessonDao));
     commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard, lessonDao));
 
-    MemberDaoImple memberDao = new MemberDaoImple();
+    MemberDaoImple memberDao = new MemberDaoImple("192.168.0.31", 8888, "/member");
     commandMap.put("/member/add", new MemberAddCommand(keyboard, memberDao));
     commandMap.put("/member/list", new MemberListCommand(keyboard, memberDao));
     commandMap.put("/member/detail", new MemberDetailCommand(keyboard, memberDao));
@@ -79,17 +75,12 @@ public class App {
         continue;
       } 
       
-      // 사용자가 입력한 명령으로 Command 객체를 찾는다.
       Command commandHandler = commandMap.get(command);
       if (commandHandler == null) {
         System.out.println("실행할 수 없는 명령입니다.");
         continue;
       }
       
-      // stateful을 stateless로 전환할 때 주의할 점!
-      // => 가능한 서버에 요청하는 시점에 서버와 연결하라!
-      // => 이 클래스에서 서버와 연결하지 않고 
-      //    데이터를 요청하는 일을 하는 객체(*Agent)에 서버 연결을 맡긴다. 
       try {
         commandHandler.execute();
         System.out.println(); 

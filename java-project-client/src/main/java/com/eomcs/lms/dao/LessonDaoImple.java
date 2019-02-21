@@ -10,6 +10,16 @@ import com.eomcs.lms.domain.Lesson;
 //
 public class LessonDaoImple implements LessonDao {
 
+  String serverAddr;
+  int port;
+  String rootPath;
+
+  public LessonDaoImple(String serverAddr, int port, String rootPath) {
+    this.serverAddr = serverAddr;
+    this.port = port;
+    this.rootPath = rootPath;
+  }
+
   @SuppressWarnings("unchecked")
   public List<Lesson> findAll() {
     try (Socket socket = new Socket(this.serverAddr, this.port);

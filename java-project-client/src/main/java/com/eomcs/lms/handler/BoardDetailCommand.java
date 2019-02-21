@@ -20,6 +20,12 @@ public class BoardDetailCommand implements Command {
     
     try {
       Board board = boardDao.findByNo(no);
+     
+      if(board == null) {
+        System.out.println("해당 번호는 존재하지 않습니다.");
+        return;
+      }
+      
       System.out.printf("내용: %s\n", board.getContents());
       System.out.printf("작성일: %s\n", board.getCreatedDate());
 
