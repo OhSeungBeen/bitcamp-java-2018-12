@@ -19,6 +19,9 @@ public class LessonAddCommand implements Command {
   public void execute() {
     Lesson lesson = new Lesson();
 
+    System.out.print("번호? ");
+    lesson.setNo(Integer.parseInt(keyboard.nextLine()));
+
     System.out.print("수업명? ");
     lesson.setTitle(keyboard.nextLine());
 
@@ -39,6 +42,7 @@ public class LessonAddCommand implements Command {
 
     try {
       lessonDao.insert(lesson);
+      System.out.println("저장하였습니다.");
       
     } catch (Exception e) {
       System.out.printf("실행 오류! : %s\n", e.getMessage());
