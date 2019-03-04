@@ -101,7 +101,7 @@ public class BoardDaoImpl implements BoardDao {
 
   public int delete(int no) {
     try (PreparedStatement stmt = con.prepareStatement(
-        "delete from lms_board where board_id = ?")) {
+        "delete from lms_photo where photo_id = ?")) {
 
       stmt.setInt(1, no);
 

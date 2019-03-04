@@ -1,13 +1,3 @@
-// 5단계: 회원관리에 검색 기능을 추가한다. 그래도 클라이언트는 변경할 필요가 없다.
-// => Application Server 아키텍처의 장점은 
-//    서버의 기능을 변경하더라도 클라이언트를 변경할 필요가 없다는 것이다.
-// => 즉 다시 클라이언트를 배포할 필요가 없다.
-// 
-// 작업
-// 1) MemberDao에 키워드로 회원 정보를 찾는 findByKeyword()를 추가한다.
-// 2) MemberSearchCommand 클래스를 생성한다.
-// 3) ApplicationInitializer에 MemberSearchCommand를 등록한다.
-//
 package com.eomcs.lms;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
