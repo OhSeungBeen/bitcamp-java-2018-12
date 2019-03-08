@@ -19,12 +19,14 @@ public class PhotoBoardUpdateCommand extends AbstractCommand {
   public void execute(Response response) throws Exception {
     PhotoBoard photoBoard = new PhotoBoard();
     photoBoard.setNo(response.requestInt("번호?"));
-    photoBoard.setTitle(response.requestString("제목?"));
-
-    if (photoBoardDao.update(photoBoard) == 0) {
-      response.println("해당 번호의 게시물이 없습니다.");
-      return;
+    
+    String input = response.requestString("제목?");
+    
+    if (input.length() >0) {
+      photoBoard.setTitle(input);
+      photoBoardDao.update(photoBoard);
     }
+
     response.println("사진 파일:");
     List<PhotoFile> files= photoFileDao.findByPhotoBoardNo(photoBoard.getNo());
     for (PhotoFile file : files) {
@@ -32,7 +34,7 @@ public class PhotoBoardUpdateCommand extends AbstractCommand {
     }
     response.println("사진은 일부만 변경할 수 없습니다.");
     response.println("전체를 새로 등록해야 합니다.");
-    String input = response.requestString("사진을 변경하시겠습니까?(y/N)");
+    input = response.requestString("사진을 변경하시겠습니까?(y/N)");
     if (input.equalsIgnoreCase("y")) {
       
       photoFileDao.deleteByPhotoBoardNo(photoBoard.getNo());

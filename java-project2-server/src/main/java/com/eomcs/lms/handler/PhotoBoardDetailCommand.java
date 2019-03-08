@@ -19,7 +19,7 @@ public class PhotoBoardDetailCommand extends AbstractCommand {
   public void execute(Response response) throws Exception {
     int no = response.requestInt("번호?");
     
-    PhotoBoard photoBoard = photoBoardDao.findByNo(no);
+    PhotoBoard photoBoard = photoBoardDao.findByNoWithFile(no);
     if (photoBoard == null) {
       response.println("해당 번호의 게시물이 없습니다.");
       return;
@@ -27,7 +27,8 @@ public class PhotoBoardDetailCommand extends AbstractCommand {
     response.println(String.format("제목: %s", photoBoard.getTitle()));
     response.println(String.format("작성일: %s", photoBoard.getCreatedDate()));
     response.println(String.format("조회수: %d", photoBoard.getViewCount()));
-    response.println(String.format("수업: %d", photoBoard.getLessonNo()));
+    response.println(String.format("수업%s(%s ~ %s)", photoBoard.getTitle(),
+        photoBoard));
     
     List<PhotoFile> files = photoFileDao.findByPhotoBoardNo(no);
     for (PhotoFile file : files) {

@@ -9,6 +9,7 @@ public class PhotoFile implements Serializable{
   private int no;
   private String filePath;
   private int photoBoardNo;
+  
   public int getNo() {
     return no;
   }
