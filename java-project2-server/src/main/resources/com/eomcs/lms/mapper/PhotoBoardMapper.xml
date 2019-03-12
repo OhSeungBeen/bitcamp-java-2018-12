@@ -4,7 +4,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-<mapper namespace="PhotoBoardMapper">
+<mapper namespace="com.eomcs.lms.dao.PhotoBoardDao">
   
   <resultMap type="photoBoard" id="photoBoardMap">
     <id column="photo_id"       property="no"/>
@@ -47,7 +47,9 @@
   </sql>
   
   <select id="findAll" resultMap="photoBoardMap" parameterType="map">
-    <bind name="pattern1" value="'%' + _keyword + '%'"/>
+    <if test="keyword != null">
+      <bind name="pattern1" value="'%' + keyword + '%'"/>
+    </if>
     <include refid="select1"/>
     <where>
       <if test="lessonNo != null">or lesson_id = #{lessonNo}</if>
