@@ -1,31 +1,15 @@
-// 13단계: Mybatis 퍼시스턴스 프레임워크 적용하기
-// => 자바 소스 코드에서 SQL을 분리하여 별도의 파일에서 관리한다.
-// => JDBC 코드를 캡슐화하여 DB 프로그래밍을 간결하게 한다.
+// 18단계: Command 구현체를 자동 생성하는 IoC 컨테이너 도입하기
+// => ApplicationInitializer의 Command 객체 생성 작업을 ApplicationContext에 위임한다. 
 // 
 // 작업:
-// 1) Mybatis 설정 파일 준비
-//    - src/main/resources/com/eomcs/lms/conf/mybatis-config.xml 생성
-//    - src/main/resources/com/eomcs/lms/conf/jdbc.properties 생성
-// 2) LessonDao에 Mybatis 적용
-//    - src/main/resources/com/eomcs/lms/mapper/LessonMapper.xml 생성
-//    - LessonDaoImpl 클래스 변경
-//    - ApplicationInitializer 클래스 변경
-// 3) MemberDao에 Mybatis 적용
-//    - src/main/resources/com/eomcs/lms/mapper/MemberMapper.xml 생성
-//    - MemberDaoImpl 클래스 변경
-//    - ApplicationInitializer 클래스 변경
-// 4) BoardDao에 Mybatis 적용
-//    - src/main/resources/com/eomcs/lms/mapper/BoardMapper.xml 생성
-//    - BoardDaoImpl 클래스 변경
-//    - ApplicationInitializer 클래스 변경 
-// 5) PhotoBoardDao에 Mybatis 적용
-//    - src/main/resources/com/eomcs/lms/mapper/PhotoBoardMapper.xml 생성
-//    - PhotoBoardDaoImpl 클래스 변경
-//    - ApplicationInitializer 클래스 변경
-// 6) PhotoFileDao에 Mybatis 적용
-//    - src/main/resources/com/eomcs/lms/mapper/PhotoFileMapper.xml 생성
-//    - PhotoFileDaoImpl 클래스 변경
-//    - ApplicationInitializer 클래스 변경
+// 1) ApplicationContext 정의
+//    => 생성자에 패키지를 지정하면 해당 패키지와 그 하위 패키지를 모두 뒤져서 
+//       Command 인터페이스를 구현한 클래스를 찾는다.
+//    => 그리고 Command 구현체의 인스턴스를 생성한다.
+// 2) Command 구현체 변경
+//  => 각 커맨드 객체에 이름을 부여한다.
+//  => ApplicationContext는 그 이름을 사용하여 객체를 보관할 것이다.
+
 package com.eomcs.lms;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -34,6 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.eomcs.lms.context.ApplicationContext;
 import com.eomcs.lms.context.ApplicationContextListener;
 import com.eomcs.lms.handler.Command;
 
@@ -44,6 +29,8 @@ public class ServerApp {
 
   // 공용 객체를 보관하는 저장소
   HashMap<String,Object> context = new HashMap<>();
+  
+  ApplicationContext beanContainer;
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -58,8 +45,11 @@ public class ServerApp {
       for (ApplicationContextListener listener : listeners) {
         listener.contextInitialized(context);
       }
-
+      // ApplicationInitailizer가 준비한 ApplicationContext를 꺼낸다.
+      
+      
       System.out.println("서버 실행 중...");
+      beanContainer = (ApplicationContext) context.get("apllicationContext");
       
       while (true) {
         new RequestHandlerThread(ss.accept()).start();
@@ -113,7 +103,7 @@ public class ServerApp {
         String request = in.readLine();
         
         // 클라이언트에게 응답하기
-        Command commandHandler = (Command) context.get(request);
+        Command commandHandler = (Command) beanContainer.getBean(request);
         
         if (commandHandler == null) {
           out.println("실행할 수 없는 명령입니다.");

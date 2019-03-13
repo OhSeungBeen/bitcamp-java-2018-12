@@ -22,7 +22,8 @@ public class LessonDeleteCommand extends AbstractCommand {
     this.lessonDao = lessonDao;
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
-    this.txManager =txManager;
+    this.txManager = txManager;
+    this.name = "/lesson/delete";
   }
   
 
@@ -30,8 +31,6 @@ public class LessonDeleteCommand extends AbstractCommand {
   public void execute(Response response) throws Exception {
     txManager.beginTransaction();
     try {
-      
-  
       int no = response.requestInt("번호?");
       
       HashMap<String,Object> params = new HashMap<>();
@@ -49,9 +48,10 @@ public class LessonDeleteCommand extends AbstractCommand {
       }
       response.println("삭제했습니다.");
       txManager.commit();
+      
     } catch (Exception e) {
       txManager.rollback();
-      response.println("삭제 중 오류 발생!");
+      response.println("삭제 중 오류 발생.");
     }
   }
 }

@@ -1,5 +1,4 @@
 package com.eomcs.lms.handler;
-import java.sql.Date;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.domain.Member;
 
@@ -9,6 +8,7 @@ public class MemberAddCommand extends AbstractCommand {
 
   public MemberAddCommand(MemberDao memberDao) {
     this.memberDao = memberDao;
+    this.name = "/member/add";
   }
 
   @Override
@@ -19,7 +19,6 @@ public class MemberAddCommand extends AbstractCommand {
     member.setPassword(response.requestString("암호?"));
     member.setPhoto(response.requestString("사진?"));
     member.setTel(response.requestString("전화?"));
-    member.setRegisteredDate(new Date(System.currentTimeMillis()));
 
     memberDao.insert(member);
     response.println("저장하였습니다.");

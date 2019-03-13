@@ -7,32 +7,34 @@ import com.eomcs.lms.domain.PhotoFile;
 import com.eomcs.mybatis.TransactionManager;
 
 public class PhotoBoardAddCommand extends AbstractCommand {
-
-  TransactionManager txManger;
+  
+  TransactionManager txManager;
   PhotoBoardDao photoBoardDao; 
   PhotoFileDao photoFileDao;
-
+  
   public PhotoBoardAddCommand(
-      TransactionManager txManger,
       PhotoBoardDao photoBoardDao,
-      PhotoFileDao photoFileDao) {
+      PhotoFileDao photoFileDao,
+      TransactionManager txManager) {
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
-    this.txManger = txManger;
+    this.txManager = txManager;
+    this.name = "/photoboard/add";
   }
-
+  
   @Override
   public void execute(Response response) throws Exception {
-    txManger.beginTransaction();
+    txManager.beginTransaction();
+    
     try {
       PhotoBoard board = new PhotoBoard();
       board.setTitle(response.requestString("사진 제목?"));
       board.setLessonNo(response.requestInt("수업?"));
       photoBoardDao.insert(board);
-
+      
       response.println("최소 한 개의 사진 파일을 등록해야 합니다.");
       response.println("파일명 입력 없이 그냥 엔터를 치면 파일 추가를 마칩니다.");
-
+      
       ArrayList<PhotoFile> files = new ArrayList<>();
       while (true) {
         String filePath = response.requestString("사진 파일?");
@@ -47,19 +49,20 @@ public class PhotoBoardAddCommand extends AbstractCommand {
         PhotoFile file = new PhotoFile();
         file.setFilePath(filePath);
         file.setPhotoBoardNo(board.getNo());// 사진 게시물을 입력한 후 자동 생성된 PK 값을 꺼낸다.
-
+        
         files.add(file);
       }
       
       photoFileDao.insert(files);
-
+      
       response.println("저장하였습니다.");
-      txManger.commit();
+      txManager.commit();
       
     } catch (Exception e) {
       e.printStackTrace();
-      response.println("저장 중 오류가 발생했습니다.");
-      txManger.rollback();
+      response.println("저장 중 오류가 발생.");
+      txManager.rollback();
+      
     }
   }
 }
