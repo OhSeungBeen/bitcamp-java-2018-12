@@ -2,8 +2,9 @@
 package ch27.b;
 
 public class Test08 {
-  public static void main(String[] args) throws Exception {
 
+  public static void main(String[] args) throws Exception {
+    
     Class<?> clazz = String.class;
     
     Class<?>[] interfaces = clazz.getInterfaces();
@@ -11,4 +12,10 @@ public class Test08 {
       System.out.println(c.getName());
     }
   }
+
 }
+
+
+
+
+

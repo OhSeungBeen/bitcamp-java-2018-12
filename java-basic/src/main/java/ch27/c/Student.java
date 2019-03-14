@@ -22,6 +22,12 @@ public class Student {
     this.age = age;
   }
 
+  @Override
+  public String toString() {
+    return "Student [name=" + name + ", email=" + email + ", working=" + working + ", age=" + age
+        + "]";
+  }
+
   public String getName() {
     return name;
   }
@@ -55,15 +61,11 @@ public class Student {
   }
   
   public static String greeting(String name, int age, boolean working) {
-    return String.format("%s님(%d,%b) 반갑습니다.", name, age, working);
+    return String.format("%s(%d,%b)님 반갑습니다!", name, age, working);
   }
-
-  @Override
-  public String toString() {
-    return "Student [name=" + name + ", email=" + email + ", working=" + working + ", age=" + age
-        + "]";
-  }
-  
-  
   
 }
+
+
+
+

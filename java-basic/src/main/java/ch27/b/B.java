@@ -1,6 +1,6 @@
 package ch27.b;
 
-public class B extends A{
+public class B extends A {
   private void b_private() {}
   void b_default() {}
   protected void b_protected() {}
