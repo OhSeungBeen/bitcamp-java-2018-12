@@ -7,6 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import org.apache.ibatis.io.Resources;
 import com.eomcs.lms.context.RequestMappingHandlerMapping.RequestMappingHandler;
@@ -16,26 +17,19 @@ public class ApplicationContext {
   
   // 인스턴스를 생성할 클래스 정보
   ArrayList<Class<?>> classes = new ArrayList<>();
+  
   // 생성한 인스턴스를 보관하는 저장소
   HashMap<String,Object> beanContainer = new HashMap<>();
   
-  public ApplicationContext(Class<?> clazz) {
-    ArrayList<Object> factoryMethod = new ArrayList<>();
+  public ApplicationContext(String packageName, Map<String,Object> beans) throws Exception {
     
-    Method[] methods = clazz.getMethods();
-    for(Method m : methods) {
-      if(m.getAnnotation(Bean.class) != null) {
-        factoryMethod.add(m);
+    // 외부에서 생성한 인스턴스가 파라미터로 넘어온다면 먼저 저장소에 보관한다.
+    if (beans != null && beans.size() > 0) {
+      Set<String> names = beans.keySet();
+      for (String name : names) {
+        addBean(name, beans.get(name));
       }
     }
-    
-    while(factoryMethod.size() > 0) {
-       Method m
-    }
-    
-  }
-  
-  public void prepareComponent(String packageName) throws Exception {
     
     // 1) 패키지명으로 디렉토리 경로를 알아낸다.
     File packageDir = Resources.getResourceAsFile(packageName.replace(".", "/"));

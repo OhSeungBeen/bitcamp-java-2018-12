@@ -1,28 +1,23 @@
-// 20단계: Command 인터페이스 대신 애노테이션을 이용하여 명령어를 처리할 메서드를 식별하기
-// => 기존에는 클라이언트로부터 명령을 받았을 때 Command 규칙에 따라 메서드를 호출하였다.
-// => 이번 단계에서는 Command 인터페이스의 구현 여부와 상관없이 
-//    @RequestMapping이 붙은 메서드를 찾아 호출해보자!
-// => 이렇게 하면 특정 인터페이스의 제약에서 벗어날 수 있다.
-//    좀 더 유연하게 커맨드를 처리하는 코드를 작성할 수 있다. 
+// 22단계: Spring IoC 컨테이너 도입
+// => 기존에 제작했던 IoC 컨테이너를 Spring IoC 컨테이너로 교체한다. 
 // 
 // 작업
-// 1) RequestMapping 애노테이션 정의
-//    => value 프로퍼티는 명령을 저장한다.
-// 2) RequestMappingHandler 정의
-//    => RequestMapping 애노테이션이 붙은 메서드의 정보를 저장하는 클래스
-//    => RequestMappingHandlerMapping의 스태틱 중첩 클래스로 정의한다. 
-// 3) RequestMappingHandlerMapping 정의 
-//    => 클라이언트가 보낸 명령을 처리할 메서드에 대한 정보(RequestMappingHandler)를 관리한다.
-// 4) Command 변경 
-//    => CRUD 관련 커맨드를 한 클래스로 합쳐서 XxxCommand로 만든다.
-//       예) BoardAddCommand, BoardListCommand, ... --> BoardCommand
-// 5) ApplicationContext 변경
-//    => 인스턴스를 모두 생성한 후 RequestMappingHandler을 찾아 
-//       RequestMappingHandlerMapping에 보관한다.
-// 6) ServerApp 변경 
-//    => 클라이언트 요청이 들어왔을 때 RequestMappingHandlerMapping에서 메서드를 찾아 실행한다.
-// 7) Command 인터페이스와 AbstractCommand 인터페이스 삭제
-// 
+// 1) Spring IoC 컨테이너의 라이브러리 가져오기
+//    => mvnrepository.com 에서 spring-context 로 검색한다.
+//    => 프로젝트의 build.gradle 파일에 spring 의존 라이브러리 정보를 추가한다.
+//    => '$ gradle eclipse'를 실행하여 의존 라이브러리를 다운로드 받고 
+//       이클립스 설정 파일을 갱신한다.
+//    => 이클립스 IDE에서 프로젝트를 refresh 한다.
+// 2) 기존 애노테이션을 Spring에서 제공하는 애노테이션으로 교체한다.
+//    => 기존의 애노테이션을 삭제한다.
+//    => Bean, Component, ComponentScan 삭제
+// 3) 기존 ApplicationContext를 삭제한다.
+// 4) ApplicationInitializer 변경
+//    => 기존의 ApplicationContext를 Spring의 ApplicationContext로 교체한다.
+//    => RequestMappingHandlerMapping 객체를 이 객체에서 준비한다.
+// 5) ServerApp 변경
+//    => 기존의 ApplicationContext를 Spring의 ApplicationContext로 교체한다.
+//    => RequestMappingHandlerMapping 객체를 맵에서 꺼낸다.
 package com.eomcs.lms;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -31,7 +26,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.eomcs.lms.context.ApplicationContext;
+import org.springframework.context.ApplicationContext;
 import com.eomcs.lms.context.ApplicationContextListener;
 import com.eomcs.lms.context.RequestMappingHandlerMapping;
 import com.eomcs.lms.context.RequestMappingHandlerMapping.RequestMappingHandler;
@@ -46,7 +41,7 @@ public class ServerApp {
   HashMap<String,Object> context = new HashMap<>();
 
   // Command 객체와 그와 관련된 객체를 보관하고 있는 빈 컨테이너
-  ApplicationContext beanContainer;
+  ApplicationContext iocContainer;
   
   // 클라이언트 요청을 처리할 메서드 정보가 들어 있는 객체
   RequestMappingHandlerMapping handlerMapping;
@@ -66,12 +61,13 @@ public class ServerApp {
       }
 
       // ApplicationInitializer가 준비한 ApplicationContext를 꺼낸다.
-      beanContainer = (ApplicationContext) context.get("applicationContext");
+      iocContainer = (ApplicationContext) context.get("applicationContext");
       
-      // 빈 컨테이너에서 RequestMappingHandlerMapping 객체를 꺼낸다.
+      // ApplicationInitializer 옵저버(관찰자, 보고 받는자)에서 준비한
+      // RequestMappingHandlerMapping 객체를 꺼낸다.
       // 이 객체에 클라이언트 요청을 처리할 메서드 정보가 들어 있다.
       handlerMapping = 
-          (RequestMappingHandlerMapping) beanContainer.getBean("handlerMapping");
+          (RequestMappingHandlerMapping) context.get("handlerMapping");
       
       System.out.println("서버 실행 중...");
       
