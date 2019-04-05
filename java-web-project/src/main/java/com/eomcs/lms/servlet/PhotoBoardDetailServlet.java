@@ -42,6 +42,10 @@ public class PhotoBoardDetailServlet extends HttpServlet {
     out.println("<html>");
     out.println("<head><title>사진 조회</title></head>");
     out.println("<body>");
+    
+    // 헤더를 출력한다.
+    request.getRequestDispatcher("/header").include(request, response);
+    
     out.println("<h1>사진 조회</h1>");
 
     if (board == null) {
@@ -119,7 +123,9 @@ public class PhotoBoardDetailServlet extends HttpServlet {
       }
       out.println("</td></tr>");
       out.println("</table>");
-
+      
+      meber
+      
       out.println("<p><a href='list'>목록</a>" + " <a href='delete?no=" + board.getNo() + "'>삭제</a>"
           + " <button type='submit'>변경</button>" + "<p>");
       out.println("</form>");

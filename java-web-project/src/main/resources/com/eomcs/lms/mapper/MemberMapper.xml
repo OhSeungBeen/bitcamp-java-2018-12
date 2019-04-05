@@ -50,7 +50,7 @@
     from 
       lms_member
     where 
-      email = #{email} 
+      email = #{email}
       and pwd = password(#{password})
   </select>
   
