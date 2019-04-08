@@ -4,22 +4,22 @@
 	pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <!DOCTYPE html>
 <%
-List<Member> members = (List<Member>)request.getAttribute("list");
+List<Member> members = (List<Member>) request.getAttribute("members");
 %>
 <html>
 <head>
-<title>회원 목록(JSP)</title>
+<title>회원 검색(JSP)</title>
 </head>
-
-<h1>회원 목록(JSP)</h1>
+<jsp:include page="/header.jsp"/>
 
 <body>
-  <jsp:include page="/header.jsp"/>
-  
-	<p>
-		<a href='add'>새 회원</a>
-	</p>
+	<h1>회원 검색(JSP)</h1>
 	
+		<%if(members.size() == 0){%>
+		  <p>회원이 존재하지 않습니다</p>
+		  
+		<%} else {%>
+		
 	<table border='1'>
 		<tr>
 			<th>번호</th>
@@ -37,15 +37,11 @@ List<Member> members = (List<Member>)request.getAttribute("list");
 			<td><%= m.getRegisteredDate() %></td>
 		</tr>
 		<% } %>
-		
+		<% } %>
+	
 	</table>
-	
-	<form action='search'>
-		<input type='text' name='keyword'>
-		<button type='submit'>검색</button>
-	</form>
-	
-	<a href='../index.html'>처음화면</a>
-	
+	<p>
+		<a href='list'>목록</a>
+	</p>
 </body>
 </html>

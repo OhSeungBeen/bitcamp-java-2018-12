@@ -1,13 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
   trimDirectiveWhitespaces="true"%>
 <!DOCTYPE html>
-<html>
+<htm>
 <head>
-<title>새 글</title>
+<title>새 글(JSP)</title>
 </head>
+
 <body>
-<jsp:include page="/header.jsp"/>
-  <h1>새 글(JSP)</h1>
+
+  <jsp:include page="/header.jsp"/>
+  <h1>새 글</h1>
+  
   <form action='add' method='post'>
     <table border='1'>
       <tr>
@@ -20,5 +23,6 @@
       <a href='list'>목록</a>
     </p>
   </form>
+  
 </body>
 </html>

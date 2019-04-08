@@ -1,7 +1,7 @@
 package com.eomcs.lms.servlet;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,16 +19,16 @@ public class MemberListServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    ServletContext sc = this.getServletContext();
-    ApplicationContext iocContainer = 
-        (ApplicationContext) sc.getAttribute("iocContainer");
-    MemberService memberService = iocContainer.getBean(MemberService.class);
+    MemberService memberService = ((ApplicationContext) this.getServletContext().getAttribute("iocContainer")).getBean(MemberService.class);
 
     List<Member> members = memberService.list(null);
     request.setAttribute("list", members);
-    
+
     response.setContentType("text/html;charset=UTF-8");
-    request.getRequestDispatcher("/member/list.jsp").include(request, response);
+    PrintWriter out = response.getWriter();
+    
+    request.getRequestDispatcher("list.jsp").include(request, response);
+   
   }
 
 }

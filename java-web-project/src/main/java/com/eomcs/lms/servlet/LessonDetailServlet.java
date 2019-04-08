@@ -1,6 +1,6 @@
 package com.eomcs.lms.servlet;
 import java.io.IOException;
-import javax.servlet.ServletContext;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,19 +18,17 @@ public class LessonDetailServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    ServletContext sc = this.getServletContext();
-    ApplicationContext iocContainer = 
-        (ApplicationContext) sc.getAttribute("iocContainer");
-    LessonService lessonService = iocContainer.getBean(LessonService.class);
+    LessonService lessonService = ((ApplicationContext) this.getServletContext().getAttribute("iocContainer")).getBean(LessonService.class);
 
     int no = Integer.parseInt(request.getParameter("no"));
+
     Lesson lesson = lessonService.get(no);
+
     request.setAttribute("lesson", lesson);
     
-
     response.setContentType("text/html;charset=UTF-8");
+    request.getRequestDispatcher("detail.jsp").include(request, response);
     
-    request.getRequestDispatcher("/lesson/detail.jsp").include(request, response);
+  }  
 
-  }
 }

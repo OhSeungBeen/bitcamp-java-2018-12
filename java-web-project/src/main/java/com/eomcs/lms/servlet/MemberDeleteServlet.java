@@ -1,6 +1,6 @@
 package com.eomcs.lms.servlet;
 import java.io.IOException;
-import javax.servlet.ServletContext;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,27 +12,23 @@ import com.eomcs.lms.service.MemberService;
 @SuppressWarnings("serial")
 @WebServlet("/member/delete")
 public class MemberDeleteServlet extends HttpServlet {
-  
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+      throws ServletException, IOException {
 
-    ServletContext sc = this.getServletContext();
-    ApplicationContext iocContainer = 
-        (ApplicationContext) sc.getAttribute("iocContainer");
-    MemberService memberService = iocContainer.getBean(MemberService.class);
-    
+    MemberService memberService = ((ApplicationContext) this.getServletContext().getAttribute("iocContainer")).getBean(MemberService.class);
+
     int no = Integer.parseInt(request.getParameter("no"));
 
     if (memberService.delete(no) > 0) {
       response.sendRedirect("list");
       return;
-    }
+    } 
+    response.setContentType("text/html;charset=UTF-8");
     
-    request.setAttribute("error.title", "회원 삭제");
-    request.setAttribute("error.content", "해당 회원의 게시물이 없습니다.");
-    request.getRequestDispatcher("/error.jsp").forward(request, response);
-  }
-  
-  
+    request.setAttribute("error.title", "회원정보 삭제");
+    request.setAttribute("error.content", "해당 번호의 회원정보가 없습니다.");
+    request.getRequestDispatcher("../error.jsp").include(request, response);
+  } // doGet
 }
