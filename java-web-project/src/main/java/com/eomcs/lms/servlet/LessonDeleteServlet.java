@@ -1,7 +1,7 @@
 package com.eomcs.lms.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +18,10 @@ public class LessonDeleteServlet extends HttpServlet{
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    LessonService lessonService = ((ApplicationContext) this.getServletContext().getAttribute("iocContainer")).getBean(LessonService.class);
+    ServletContext sc = this.getServletContext();
+    ApplicationContext iocContainer = 
+        (ApplicationContext) sc.getAttribute("iocContainer");
+    LessonService lessonService = iocContainer.getBean(LessonService.class);
 
     int no = Integer.parseInt(request.getParameter("no"));
 
@@ -27,7 +30,7 @@ public class LessonDeleteServlet extends HttpServlet{
       return;
     }
     
-    response.setContentType("text/html;charset=UTF-8");
+    // 오류 내용을 출력하는 JSP로 포워딩한다.
     request.setAttribute("error.title", "수업 삭제");
     request.setAttribute("error.content", "해당 번호의 수업이 없습니다.");
     

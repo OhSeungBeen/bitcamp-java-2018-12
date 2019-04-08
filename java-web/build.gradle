@@ -10,6 +10,8 @@ repositories {
 }
 
 dependencies {
+    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+    
 
     compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
     

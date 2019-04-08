@@ -1,7 +1,7 @@
 package com.eomcs.lms.servlet;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.UUID;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +22,9 @@ public class MemberUpdateServlet extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    MemberService memberService = ((ApplicationContext) this.getServletContext().getAttribute("iocContainer")).getBean(MemberService.class);
+    ServletContext sc = this.getServletContext();
+    ApplicationContext iocContainer = (ApplicationContext) sc.getAttribute("iocContainer");
+    MemberService memberService = iocContainer.getBean(MemberService.class);
 
     Member member = new Member();
     member.setNo(Integer.parseInt(request.getParameter("no")));
@@ -30,12 +32,11 @@ public class MemberUpdateServlet extends HttpServlet {
     member.setEmail(request.getParameter("email"));
     member.setPassword(request.getParameter("password"));
     member.setTel(request.getParameter("tel"));
-
     Part photo = request.getPart("photo");
+
     if (photo.getSize() > 0) {
       String filename = UUID.randomUUID().toString();
-      String uploadDir = this.getServletContext().getRealPath(
-          "/upload/member");
+      String uploadDir = this.getServletContext().getRealPath("/upload/member");
       photo.write(uploadDir + "/" + filename);
       member.setPhoto(filename);
     }
@@ -44,12 +45,10 @@ public class MemberUpdateServlet extends HttpServlet {
       response.sendRedirect("list");
       return;
     }
-    response.setContentType("text/html;charset=UTF-8");
+    request.setAttribute("error.title", "회원 변경");
+    request.setAttribute("error.content", "해당 번호의 회원이 없습니다.");
     
-    request.setAttribute("error.title", "회원정보 변경");
-    request.setAttribute("error.content", "해당 번호의 회원정보가 없습니다.");
-    request.getRequestDispatcher("../error.jsp").include(request, response);
-   
+    request.getRequestDispatcher("/error.jsp").forward(request, response);
   }
 
 

@@ -1,6 +1,6 @@
 package com.eomcs.lms.servlet;
 import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,17 +18,21 @@ public class LessonDetailServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    LessonService lessonService = ((ApplicationContext) this.getServletContext().getAttribute("iocContainer")).getBean(LessonService.class);
+    ServletContext sc = this.getServletContext();
+    ApplicationContext iocContainer = 
+        (ApplicationContext) sc.getAttribute("iocContainer");
+    LessonService lessonService = iocContainer.getBean(LessonService.class);
 
     int no = Integer.parseInt(request.getParameter("no"));
 
     Lesson lesson = lessonService.get(no);
-
+    
+    // JSP가 사용할 수 있도록 ServletRequest 보관소에 저장해둔다.
     request.setAttribute("lesson", lesson);
     
     response.setContentType("text/html;charset=UTF-8");
-    request.getRequestDispatcher("detail.jsp").include(request, response);
-    
+    // JSP의 실행을 포함시킨다.
+    request.getRequestDispatcher("/lesson/detail.jsp").include(request, response);
   }  
 
 }

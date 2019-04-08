@@ -1,8 +1,8 @@
 package com.eomcs.lms.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Date;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,16 +21,17 @@ public class LessonAddServlet extends HttpServlet {
       throws ServletException, IOException {
 
     response.setContentType("text/html;charset=UTF-8");
-    request.getRequestDispatcher("form.jsp").include(request, response);
-
+    request.getRequestDispatcher("/lesson/form.jsp").include(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    
-    LessonService lessonService = ((ApplicationContext) this.getServletContext().getAttribute("iocContainer")).getBean(LessonService.class);
 
+    ServletContext sc = this.getServletContext();
+    ApplicationContext iocContainer = 
+        (ApplicationContext) sc.getAttribute("iocContainer");
+    LessonService lessonService = iocContainer.getBean(LessonService.class);
 
     Lesson lesson = new Lesson();
     lesson.setTitle(request.getParameter("title"));

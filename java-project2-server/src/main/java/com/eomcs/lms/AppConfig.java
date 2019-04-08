@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ImportResource;
 // => Spring IoC 컨테이너는 @ImportResource 애노테이션에 지정된 설정 파일에 따라 객체를 준비한다.
 @ImportResource("classpath:/com/eomcs/lms/conf/tx-context.xml")
 public class AppConfig {
+
 }
 
 
