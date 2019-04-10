@@ -18,7 +18,7 @@
 </body>
 </html>
 <%-- 
-tablib 지시문
+taglib 지시문
 => 외부에 따로 정의된 JSP 확장 태그를 가져올 때 사용한다.
 => JSP 확장 태그
    1) JSTL(JSP Standard Tag Library)
