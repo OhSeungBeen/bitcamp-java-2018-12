@@ -6,10 +6,17 @@ plugins {
 }
 
 repositories {
+    flatDir {
+      dirs 'lib' // 현재 프로젝트의 lib 디렉토리를 지정한다.
+    }
     jcenter()
 }
 
 dependencies {
+    // 특정 디렉토리에 있는 라이브러리 파일을 가져오기
+    
+    compile name: 'java-web-library'
+    
     compile group: 'javax.servlet', name: 'jstl', version: '1.2'
     
 
@@ -18,6 +25,6 @@ dependencies {
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     
     providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-
+    
     testImplementation 'junit:junit:4.12'
 }
