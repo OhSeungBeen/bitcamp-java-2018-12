@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:p="http://www.springframework.org/schema/p"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -9,9 +10,15 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop.xsd">
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
   
   <context:component-scan base-package="bitcamp.app2"/>
+<!-- component-scan 태그는 @MatrixVariable 애노테이션을 처리할 객체를 추가하지 않는다. 
+      이 애노테이션을 처리하려면 다음의 태그를 선언하여 관련 객체를 등록해야 한다.-->
+      <!--  @Matrix 애노테이션 활성화 시키기 -->
+  <mvc:annotation-driven enable-matrix-variables="true"/>
   
   <!-- 기존의 뷰 리졸버를 대체한다. -->
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -20,6 +27,33 @@
     <property name="suffix" value=".jsp"/>
   </bean>
 
+  <!-- 인터셉터 배치하기 -->
+  <mvc:interceptors>
+
+  <mvc:interceptor>
+  <mvc:mapping path="/c04_1/**"/> 
+  <!--  URL의 기준은 프론트 컨트롤러이다. 
+  /c04_1/* => /c04_1/ 바로 밑에 있는 URL에 대해서만 적용된다.
+  /c04_1/** => /c04_1/ 의 모든 하위 URL에 대해서 적용된다. -->
+  <bean class="bitcamp.app2.Controller04_1_interceptor1"/>
+  </mvc:interceptor>
+
+  <mvc:interceptor>
+  <mvc:mapping path="/c04_1/a/*"/> <!--  URL의 기준은 프론트 컨트롤러이다. -->
+  <bean class="bitcamp.app2.Controller04_1_interceptor2"/>
+  </mvc:interceptor>
+  
+  <!-- 이프론트 컨트롤러의 모든 요청에 대해 인터셉터를 적용하고 싶다면
+   그냥 <bean>태그를 선언한다. -->
+  <bean class="bitcamp.app2.Controller04_1_interceptor3"/>
+
+<!--  특정 URL은 제외하기 -->
+<mvc:interceptor>
+  <mvc:mapping path="/c04_1/**"/> <!--  URL의 기준은 프론트 컨트롤러이다. -->
+  <mvc:exclude-mapping path="/c04_1/a/**"/>
+  <bean class="bitcamp.app2.Controller04_1_interceptor4"/>
+  </mvc:interceptor>
+  </mvc:interceptors>
 </beans>
 
 
