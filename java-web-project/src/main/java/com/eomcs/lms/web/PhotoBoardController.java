@@ -8,6 +8,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ public class PhotoBoardController {
   
   @GetMapping("form")
   public void form(Map<String,Object> map) {
-    List<Lesson> lessons = lessonService.list();
+    List<Lesson> lessons = lessonService.list(0,0);
     map.put("lessons", lessons);
   }
   
@@ -83,7 +84,7 @@ public class PhotoBoardController {
   public String detail(@PathVariable int no, Map<String,Object> map) throws Exception {
     
     PhotoBoard board = photoBoardService.get(no);
-    List<Lesson> lessons = lessonService.list();
+    List<Lesson> lessons = lessonService.list(0,0);
     map.put("board", board);
     map.put("lessons", lessons);
     
@@ -91,10 +92,31 @@ public class PhotoBoardController {
   }
   
   @GetMapping
-  public String list(Map<String,Object> map) throws Exception {
-
-    List<PhotoBoard> boards = photoBoardService.list(0, null);
-    map.put("list", boards);
+  public String list(
+      @RequestParam(defaultValue="1") int pageNo,
+      @RequestParam(defaultValue="3") int pageSize,
+      Model model) throws Exception {
+    
+    if (pageSize < 3 || pageSize > 8)
+      pageSize = 3;
+    
+    int rowCount = photoBoardService.size();
+    int totalPage = rowCount / pageSize;
+    if (rowCount % pageSize > 0)
+      totalPage++;
+    
+    if (pageNo < 1)
+      pageNo = 1;
+    else if (pageNo > totalPage)
+      pageNo = totalPage;
+    
+    List<PhotoBoard> boards = photoBoardService.list(0,null, pageNo, pageSize);
+    model.addAttribute("list", boards);
+    model.addAttribute("pageNo", pageNo);
+    model.addAttribute("pageSize", pageSize);
+    model.addAttribute("totalPage", totalPage);
+    model.addAttribute("rowCount", rowCount);
+    
     return "photoboard/list";
   }
   
@@ -110,7 +132,7 @@ public class PhotoBoardController {
     if (keyword.length() > 0)
       searchWord = keyword;
 
-    List<PhotoBoard> boards = photoBoardService.list(searchlessonNo, searchWord);
+    List<PhotoBoard> boards = photoBoardService.list(searchlessonNo, searchWord, 0 , 0);
     map.put("list", boards);
     
   }

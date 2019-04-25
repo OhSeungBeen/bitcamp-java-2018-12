@@ -72,6 +72,7 @@ public class BoardController {
     model.addAttribute("pageNo", pageNo);
     model.addAttribute("pageSize", pageSize);
     model.addAttribute("totalPage", totalPage);
+    model.addAttribute("rowCount", rowCount);
     
     return "board/list";
   }

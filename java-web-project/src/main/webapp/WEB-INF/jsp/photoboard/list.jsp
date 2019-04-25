@@ -44,6 +44,48 @@
     <input type='text' name='keyword'>
     <button type='submit'>검색</button>
   </form>
+  <br>
+  <nav aria-label="목록 페이지 이동">
+  <ul class="pagination justify-content-center">
+    <li class="page-item ${pageNo <= 1 ? 'disabled' : ''}"><a class="page-link" 
+    href="?pageNo=${pageNo-1}&pageSize=${pageSize}">이전</a></li>
+    
+    <c:choose>
+    
+    <c:when test="${rowCount <= pageSize*3}">
+      <c:forEach var="no" begin="1" end="${totalPage}" step="1">
+        <li class="page-item"><a class="page-link" href="?pageNo=${no}&pageSize=${pageSize}">${no}</a></li>
+      </c:forEach>
+    </c:when>
+        
+    <c:otherwise>
+      <c:choose>
+        <c:when test="${pageNo == 1}">
+          <c:forEach var="no" begin="1" end="3" step="1">
+          <li class="page-item"><a class="page-link" href="?pageNo=${no}&pageSize=${pageSize}">${no}</a></li>
+          </c:forEach>
+        </c:when>
+        <c:when test="${pageNo == totalPage}">
+          <c:forEach var="no" begin="${totalPage-2}" end="${totalPage}" step="1">
+          <li class="page-item"><a class="page-link" href="?pageNo=${no}&pageSize=${pageSize}">${no}</a></li>
+          </c:forEach>
+        </c:when>
+      <c:otherwise>
+        <c:forEach var="no" begin="${pageNo-1}" end="${pageNo+1}" step="1">
+          <li class="page-item"><a class="page-link" href="?pageNo=${no}&pageSize=${pageSize}">${no}</a></li>
+        </c:forEach>
+      </c:otherwise>
+      </c:choose>
+    </c:otherwise>
+    
+    </c:choose>
+    
+    
+    
+    <li class="page-item ${pageNo == totalPage ? 'disabled' : ''}"><a class="page-link" 
+    href="?pageNo=${pageNo+1}&pageSize=${pageSize}">다음</a></li>
+  </ul>
+</nav>
 </div><!-- .container -->
 
 <jsp:include page="../javascript.jsp"/>

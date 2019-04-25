@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="${contextRootPath}/css/common.css">
 </head>
 <body>
-
   <jsp:include page="../header.jsp" />
 
 <div class="container">
@@ -25,12 +24,12 @@
     <label for="no" class="col-sm-2 col-form-label">번호</label>
     <div class="col-sm-10">
       <input type="text" class="form-control-plaintext" id="no" 
-             value='${board.no}' readonly>
+             name='no' value='${board.no}' readonly>
     </div>
   </div>
   
   <div class="form-group row">
-    <label for="no" class="col-sm-2 col-form-label">제목</label>
+    <label for="no" class="col-sm-2 col-form-label">사진 제목</label>
     <div class="col-sm-10">
       <input type="text" class="form-control-plaintext" id="title" 
              name='title' value='${board.title}' >
@@ -54,7 +53,7 @@
   </div>
   
   <div class="form-group row">
-    <label for="no" class="col-sm-2 col-form-label">수업</label>
+    <label for="lessonNo" class="col-sm-2 col-form-label">수업</label>
     <div class="col-sm-10">
       <select class="custom-select" name='lessonNo'>
           <c:forEach items="${lessons}" var="lesson">
@@ -68,49 +67,73 @@
     </div>
   </div>
   
+  
   <div class="form-group row">
     <div class="col-sm-10">
-      <h5>최소 한 개의 사진 파일을 등록해야 합니다.</h5>
+      <h6>최소 한 개의 사진 파일을 등록해야 합니다.</h6>
     </div>
   </div>
   
-    <table border="1">
-      <tr>
-        <th>사진1</th>
-        <td><input type='file' name='photo'></td>
-      </tr>
-      <tr>
-        <th>사진2</th>
-        <td><input type='file' name='photo'></td>
-      </tr>
-      <tr>
-        <th>사진3</th>
-        <td><input type='file' name='photo'></td>
-      </tr>
-      <tr>
-        <th>사진4</th>
-        <td><input type='file' name='photo'></td>
-      </tr>
-      <tr>
-        <th>사진5</th>
-        <td><input type='file' name='photo'></td>
-      </tr>
-      <tr>
-        <th>사진</th>
-        <td>
-          <c:set var="contextRootPath" value="${pageContext.servletContext.contextPath}"></c:set>
+  <div class="form-group row">
+    <label for="photo" class="col-sm-2 col-form-label">사진1</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control-plaintext" id="photo"
+      name='photo'>
+    </div>
+  </div>
+  
+  <div class="form-group row">
+    <label for="photo2" class="col-sm-2 col-form-label">사진2</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control-plaintext"
+      name='photo'>
+    </div>
+  </div>
+  
+  <div class="form-group row">
+    <label for="photo3" class="col-sm-2 col-form-label">사진3</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control-plaintext"
+      name='photo'>
+    </div>
+  </div>
+  
+  <div class="form-group row">
+    <label for="photo4" class="col-sm-2 col-form-label">사진4</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control-plaintext"
+      name='photo'>
+    </div>
+  </div>
+  
+  <div class="form-group row">
+    <label for="photo5" class="col-sm-2 col-form-label">사진5</label>
+    <div class="col-sm-10">
+      <input type="file" class="form-control-plaintext" id="photo5"
+      name='photo'>
+    </div>
+  </div>
+  
+  <div class="form-group row">
+    <div class="col-sm-10">
+      <c:set var="contextRootPath" value="${pageContext.servletContext.contextPath}"></c:set>
           <c:forEach items="${board.files}" var="file"> 
             <img src='${contextRootPath}/upload/photoboard/${file.filePath}' style='height: 80px'> 
           </c:forEach>
-        </td>
-      </tr>
-    </table>
-
+    </div>
+  </div>
+  
+  <div class="form-group row">
+    <div class="col-sm-10">
+      <a class="btn btn-primary" href='.'>목록</a> 
+      <a class="btn btn-primary" href='delete/${board.no}'>삭제</a> 
+      <button class="btn btn-primary">변경</button>
+      <a class="btn btn-primary" href='${contextRootPath}'>메인화면</a>
+    </div>
+  </div>
+  
     <p>
-      <a href='list'>목록</a>
-      <a href='delete/${board.no}'>삭제</a>
-      <button type='submit'>변경</button>
-      <a href='../'>메인화면</a>
+      
     <p>
   </form>
 </c:otherwise>

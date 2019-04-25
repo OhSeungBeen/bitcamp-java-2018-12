@@ -4,12 +4,13 @@
 <html>
 <head>
 <title>로그인</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="${contextRootPath}/css/common.css">
 </head>
 <body>
 <jsp:include page="../header.jsp"/>
 <div class ="container">
-<h1>로그인(JSP)</h1>
+<h1>로그인</h1>
 <form action='login' method='post'>
   <div class="form-group">
     <label for="email">이메일</label>

@@ -84,6 +84,7 @@ public class MemberController {
     model.addAttribute("pageNo", pageNo);
     model.addAttribute("pageSize", pageSize);
     model.addAttribute("totalPage", totalPage);
+    model.addAttribute("rowCount", rowCount);
     
     return "member/list";
   }
