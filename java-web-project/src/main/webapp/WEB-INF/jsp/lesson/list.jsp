@@ -8,23 +8,39 @@
 <html>
 <head>
   <title>수업 목록</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="${contextRootPath}/css/common.css">
 </head>
 <body>
 <jsp:include page="../header.jsp"/>
-<h1>수업 목록(JSP2 + EL + JSTL)</h1>
-<p><a href='form'>새 수업</a></p>
 
-<table border='1'>
-  <tr><th>번호</th><th>수업</th><th>기간</th><th>총교육시간</th></tr>
+<div class="container">
+<h1>수업 목록</h1>
+<p><a href='form' class="btn btn-primary btn-sm">새 수업</a></p>
+
+<table class="table table-hover">
+<thead>
+  <tr>
+  <th scope="col">번호</th>
+  <th scope="col">수업</th>
+  <th scope="col">기간</th>
+  <th scope="col">총교육시간</th>
+  </tr>
+</thead>
+<tbody>
 <c:forEach items="${list}" var="lesson">
   <tr>
-    <td>${lesson.no}</td>
+    <th scope="row">${lesson.no}</th>
     <td><a href='${lesson.no}'>${lesson.title}</a></td>
     <td>${lesson.startDate} ~ ${lesson.endDate}</td>
     <td>${lesson.totalHours}</td>
   </tr>
 </c:forEach>
+</tbody>
 </table>
+</div><!-- .container -->
+
+<jsp:include page="../javascript.jsp"/>
 </body>
 </html>
 
