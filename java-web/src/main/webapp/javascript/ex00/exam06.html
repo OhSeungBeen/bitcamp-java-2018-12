@@ -1,0 +1,26 @@
+ㅐㅔ<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+  <title>Insert title here</title>
+</head>
+<body>
+  <h1>6.AJAX</h1>
+  <div id="d1"></div>
+  <button id="btn1">HTML 가져오기</button>
+
+<script>
+var tag1 = document.getElementById("btn1");
+
+tag1.onclick = function() { 
+    var xhr = new XMLHttpRequest;
+    xhr.open("GET", "exam06.jsp", false);
+    xhr.send();
+
+    var tag2 = doucment.getElementById("d1");
+    tag2.innerHTML = xhr.responseText;
+};
+
+</script>
+</body>
+</html>
