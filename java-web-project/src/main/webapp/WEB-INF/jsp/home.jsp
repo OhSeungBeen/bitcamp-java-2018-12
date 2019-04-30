@@ -5,7 +5,7 @@
 <head>
 <title>Home</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="${contextRootPath}/css/common.css">
 </head>
 <body>
 <jsp:include page="header.jsp"></jsp:include>

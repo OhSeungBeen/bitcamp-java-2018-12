@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ex06</title>
+</head>
+<body>
+<h1>이벤트 - a 태그와 기본 동작()을 중단시키기</h1>
+<p>a 태그의 링크를 클릭하면 href 에 등록한 URL을 요청하는 것이
+a 태그의 기본 동작 이다.</p>
+
+<form>
+ <button>전송</button>
+</form>
+
+<form>
+ <button onsubmit="return false">전송 막기1</button>
+</form>
+
+<form id="form2">
+ <button>전송 막기2</button>
+</form>
+
+<form id="form3">
+ <button>전송 막기3</button>
+</form>
+
+<form id="form4">
+<!-- 일반 버튼은 서버에 전송을 수행하지 않는다. -->
+ <button type="button">전송 막기4</button>
+</form>
+
+<form id="form5">
+이름: <input type="text" id="name"><br>
+ <button type="button">전송</button>
+</form>
+
+<script>
+"use strict"
+
+document.querySelector("#form2").onsubmit = () => {
+  return false;
+}
+
+document.querySelector("#form3").onsubmit = () => {
+  e.preventDefault();
+}
+
+
+</script>
+</body>
+</html>
+
+
+
+
+

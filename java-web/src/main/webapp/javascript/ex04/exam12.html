@@ -33,8 +33,13 @@ Score.f = function() {
 	console.log("Hello!");
 }
 
+
 // 객체 생성 및 초기화
 var s = new Score("홍길동", 100, 100, 100);
+var x = new Score("임꺽정",100,80,80);
+
+console.log(s.sum);
+
 
 // 인스턴스 함수 호출
 console.log(s.sum())
@@ -45,6 +50,7 @@ console.log(s.aver())
 //s.f(); // 실행 오류!
 
 // count와 f()는 생성자를 통해 직접 사용해야 한다.
+
 Score.count = 100;
 Score.f();
 
