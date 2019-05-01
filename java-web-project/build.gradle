@@ -51,6 +51,10 @@ dependencies {
     
     implementation 'com.google.guava:guava:26.0-jre'
     testImplementation 'junit:junit:4.12'
+    
+    // JSON 형식을 다루는 라이브러리
+    // Jackson
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
 }
 
 // 만약 Gradle을 사용하여 프로젝트를 실행한다면 다음 클래스가 실행될 것이다.

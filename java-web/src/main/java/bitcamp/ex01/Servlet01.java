@@ -80,6 +80,7 @@ public class Servlet01 implements Servlet {
     return this.config;
   }
   
+  
   @Override
   public String getServletInfo() {
     // 서블릿 컨테이너가 관리자 화면을 출력할 때 이 메서드를 호출한다. 
