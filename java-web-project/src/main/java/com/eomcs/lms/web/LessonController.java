@@ -25,7 +25,7 @@ public class LessonController {
   
   @PostMapping("add")
   public String add(Lesson lesson) throws Exception {
-    lessonService.add(lesson);
+     lessonService.add(lesson);
     return "redirect:.";
   }
   

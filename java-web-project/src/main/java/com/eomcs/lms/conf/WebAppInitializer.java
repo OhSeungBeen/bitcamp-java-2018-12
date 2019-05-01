@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 // AbstractAnnotationConfigDispatcherServletInitializer 클래스를 상속 받으면
 // DispatcherServlet은 AnnotaionCofigWebApplicationContext를
 // IoC 컨테이너로 사용한다.
+
 public class WebAppInitializer 
   extends AbstractAnnotationConfigDispatcherServletInitializer{
   

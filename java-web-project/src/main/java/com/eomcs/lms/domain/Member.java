@@ -1,4 +1,8 @@
 package com.eomcs.lms.domain;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.sql.Date;
 
@@ -31,7 +35,14 @@ public class Member implements Cloneable, Serializable {
     this.no = no;
   }
   public String getName() {
-    return name;
+    
+    try {
+      FileInputStream fi = new FileInputStream(new File("a.text"));
+      BufferedInputStream bi = new BufferedInputStream(fi);
+      return name;
+    } catch (FileNotFoundException e) {
+    }
+    return email;
   }
   public void setName(String name) {
     this.name = name;

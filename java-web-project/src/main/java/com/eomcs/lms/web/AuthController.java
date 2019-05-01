@@ -1,4 +1,5 @@
 package com.eomcs.lms.web;
+import java.sql.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +37,7 @@ public class AuthController {
       session.removeAttribute(REFERER_URL);
     }
   }
-
+  
   @PostMapping("login")
   public String login(
       String email,
@@ -44,7 +45,8 @@ public class AuthController {
       String saveEmail,
       HttpSession session,
       HttpServletResponse response) throws Exception {
-
+    
+    Date date = Date.valueOf("2019-04-27");
     Cookie cookie;
     if (saveEmail != null) {
       cookie = new Cookie("email", email);

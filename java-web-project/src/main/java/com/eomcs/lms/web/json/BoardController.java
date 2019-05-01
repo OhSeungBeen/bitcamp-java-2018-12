@@ -47,7 +47,7 @@ public class BoardController {
   }
 
   @GetMapping("{no}")
-  public Object detail(@PathVariable int no) throws Exception {
+  public Object detail(@RequestParam int no) throws Exception {
     Board board = boardService.get(no);
     return board;
   }
