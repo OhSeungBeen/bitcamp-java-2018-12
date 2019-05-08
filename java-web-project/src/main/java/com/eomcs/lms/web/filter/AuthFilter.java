@@ -54,12 +54,12 @@ public class AuthFilter implements Filter {
         
         if(pathInfo.startsWith("/json")) {
           response.setContentType("text/plain;charset=UTF-8");
-          PrintWriter out =response.getWriter();
+          PrintWriter out = response.getWriter();
           out.println("{\"status\":\"loginfail\", \"message\":\"로그인 하지 않았습니다.\"}");
         } else {
           httpResp.sendRedirect(contextRootPath + "/app/auth/form");
-          return;
         }
+        return;
       }
     }
     

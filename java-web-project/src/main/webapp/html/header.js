@@ -23,8 +23,6 @@
 document.body.addEventListener('loaded.header', () =>{
   // 웹 페이지에 header.html을 삽입했으면 로그인 정보를 가져와 설정한다.
   loadLoginUser(); 
-
-  
   document.querySelector('#logout-menu').addEventListener('click', (e)=> {
     e.preventDefault();
     var xhr = new XMLHttpRequest()

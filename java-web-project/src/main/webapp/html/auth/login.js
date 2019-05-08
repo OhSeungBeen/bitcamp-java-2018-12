@@ -7,7 +7,7 @@ if (window.localStorage.getItem('email')) {
 document.querySelector('#login-btn').onclick = () => {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
-    if (xhr.readyState != 4 && xhr.status != 200)
+    if (xhr.readyState != 4 || xhr.status != 200)
       return;
     var data = JSON.parse(xhr.responseText);
     
@@ -17,6 +17,7 @@ document.querySelector('#login-btn').onclick = () => {
       alert('로그인 실패입니다!\n' + data.message);
     }
   };
+  
   xhr.open('POST', '../../app/json/auth/login', true);
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
   var email = document.querySelector('#email').value;

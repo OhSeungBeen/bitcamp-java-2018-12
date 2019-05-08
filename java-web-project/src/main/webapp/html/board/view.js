@@ -3,28 +3,31 @@ var param = location.href.split('?')[1];
 if (param) {
   document.querySelector('h1').innerHTML = "게시물 조회";
   loadData(param.split('=')[1])
-  var el = document.querySelectorAll('.bit-new-item');
+  var el = document.querySelectorAll('.bit-board-detail');
   for (e of el) {
-    e.style.display = 'none';
+    e.className = e.className.replace('bit-invisible', '');
   }
+  
 } else {
   document.querySelector('h1').innerHTML = "새 글";
-  var el = document.querySelectorAll('.bit-view-item');
+  var el = document.querySelectorAll('.bit-board-add');
   for (e of el) {
-    e.style.display = 'none';
+    e.className = e.className.replace('bit-invisible', '');
   }
+  
+  
 }
 
 document.querySelector('#add-btn').onclick = () => {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
-    if (xhr.readyState != 4 && xhr.status != 200)
+    if (xhr.readyState != 4 || xhr.status != 200)
       return;
     var data = JSON.parse(xhr.responseText);
     if (data.status == 'success') {
       location.href = "index.html"
     } else {
-      alert('등록 실패입니다!' +data.message)
+      alert('등록 실패입니다!' + data.message)
     }
   };
   xhr.open('POST', '../../app/json/board/add', true);
@@ -36,7 +39,7 @@ document.querySelector('#add-btn').onclick = () => {
 document.querySelector('#delete-btn').onclick = () => {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
-    if (xhr.readyState != 4 && xhr.status != 200)
+    if (xhr.readyState != 4 || xhr.status != 200)
       return;
     var data = JSON.parse(xhr.responseText);
     if (data.status == 'success') {
@@ -53,7 +56,7 @@ document.querySelector('#delete-btn').onclick = () => {
   document.querySelector('#update-btn').onclick = () => {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
-      if (xhr.readyState != 4 && xhr.status != 200)
+      if (xhr.readyState != 4 || xhr.status != 200)
         return;
       var data = JSON.parse(xhr.responseText);
       if (data.status == 'success') {
@@ -67,14 +70,14 @@ document.querySelector('#delete-btn').onclick = () => {
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
     var no = document.querySelector("#no").value;
     var contents = document.querySelector("#contents").value;
-    var qs = "contents=" + encodeURIComponent(contents) + '&no' + no;
+    var qs = "contents=" + encodeURIComponent(contents) + '&no=' + no;
     xhr.send(qs);
 };
 
 function loadData(no) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
-    if (xhr.readyState != 4 && xhr.status != 200)
+    if (xhr.readyState != 4 || xhr.status != 200)
       return;
     
     var data = JSON.parse(xhr.responseText);

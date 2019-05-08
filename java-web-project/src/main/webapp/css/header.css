@@ -4,14 +4,6 @@
 	min-height: 60px;
 }
 
-#bit-login-state {
-  display: none;
-}
-
-#bit-not-login-state {
-	display: none;
-}
-
 #bit-login-state img {
 	height: 30px;
 }
