@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.eomcs.lms.dao.TourCommentDao">
+  
+  <resultMap type="tourComment" id="commentMap">
+    <id column="tour_comment_id" property="no"/>
+    <result column="member_id" property="memberNo"/>
+    <result column="tour_id" property="tourNo"/>
+    <result column="ranking" property="order"/>
+    <result column="level" property="level"/>
+    <result column="content" property="content"/>
+    <result column="created_date" property="createdDate"/>
+    
+    <association property="member" javaType="member">
+    <id column="member_id" property="no"/>
+    <result column="email" property="email"/>
+    <result column="name" property="name"/>
+    <result column="nickname" property="nickname"/>
+    <result column="photo" property="photo"/>
+    </association>
+  </resultMap>
+  
+  <sql id="select1">
+    select 
+      tour_comment_id,
+      member_id,
+      tour_id, 
+      ranking, 
+      level, 
+      content,
+      created_date 
+    from 
+      tour_comment
+  </sql>
+  
+  <!-- find comment by tourNo -->
+  <select id="findByTourNo" resultMap="commentMap" parameterType="map">
+    select
+    *
+    from tour_comment as t
+    join member as m
+    on t.member_id = m.member_id
+    where 
+      tour_id = #{no} and parent_id = 0
+    order by tour_comment_id desc
+    <if test="size != null and rowNo != null">
+      limit #{rowNo}, #{size}
+    </if>
+  </select>
+  
+  <!-- insert comment -->
+  <insert id="insert" parameterType="tourComment" useGeneratedKeys="true"  keyProperty="no" >
+    insert into tour_comment(member_id, tour_id, parent_id, level, content) 
+    values(#{memberNo},#{tourNo},#{parentNo},#{level},#{content})
+  </insert>
+   
+   <!-- delete comment by commentNo -->
+  <delete id="delete" parameterType="int">
+    delete from tour_comment 
+    where tour_comment_id = #{no}
+  </delete>
+  
+  <!-- update comment by commentNo -->
+  <update id="update" parameterType="TourComment">
+    update tour_comment 
+    set 
+      content = #{content},
+      created_date = now()
+    where tour_comment_id = #{no}
+  </update>
+  
+  <!-- count all comment by Tour No -->
+  <select id="countCommentbyTourNo" resultType="int" parameterType="int">
+    select count(*) from tour_comment
+    where tour_id = #{no} and parent_id = 0;
+  </select>
+  
+  <!-- cout all comment -->
+  <select id="countAll" resultType="int">
+    select count(*) from tour_comment
+  </select>
+  
+  <!-- <select id="findAll" resultMap="commentMap">
+    <include refid="select1"/>
+    order by 
+      tour_comment_id asc
+  </select> -->
+  
+   
+</mapper>
+
+
+
+
+
+
+
+
+
+
